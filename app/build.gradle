@@ -1,0 +1,53 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.sesame.voicechat'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.sesame.voicechat"
+        minSdk 29  // Automotive library requires minimum API 29
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    
+    // WebSocket client
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    
+    // JSON handling
+    implementation 'org.json:json:20231013'
+    
+    // Audio processing
+    implementation 'androidx.media:media:1.7.0'
+    
+    // Automotive specific dependencies
+    implementation 'androidx.car.app:app:1.4.0'
+    implementation 'androidx.car.app:app-automotive:1.4.0'
+}

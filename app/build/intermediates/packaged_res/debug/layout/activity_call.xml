@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:id="@+id/headerSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_alignParentTop="true">
+
+        <!-- Character Name -->
+        <TextView
+            android:id="@+id/characterName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Maya"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_marginTop="32dp" />
+
+        <!-- Call Duration -->
+        <TextView
+            android:id="@+id/callDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="00:03"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_marginTop="8dp" />
+
+        <!-- Connection Status -->
+        <TextView
+            android:id="@+id/connectionStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connected"
+            android:textSize="14sp"
+            android:textColor="@color/success_green"
+            android:gravity="center"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+    <!-- Voice Activity Indicator (Centerpiece) -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/headerSection"
+        android:layout_above="@id/controlsSection"
+        android:gravity="center">
+
+        <!-- Pulsing Background Circle -->
+        <View
+            android:id="@+id/pulseBackground"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            android:background="@drawable/voice_activity_gradient"
+            android:alpha="0.3" />
+
+        <!-- Main Voice Activity Button -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="100dp"
+            app:cardElevation="16dp">
+
+            <View
+                android:id="@+id/voiceActivityIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/voice_activity_gradient" />
+
+        </androidx.cardview.widget.CardView>
+
+
+    </FrameLayout>
+
+    <!-- Bottom Controls Section -->
+    <LinearLayout
+        android:id="@+id/controlsSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="32dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="32dp">
+
+        <!-- Mute Button -->
+        <FrameLayout
+            android:id="@+id/muteButton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="48dp"
+            android:background="@drawable/mute_button_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/muteIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_mic"
+                android:tint="@color/teal_accent" />
+
+        </FrameLayout>
+
+        <!-- End Call Button -->
+        <FrameLayout
+            android:id="@+id/endCallButton"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/end_call_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_call_end"
+                android:tint="@android:color/white" />
+
+        </FrameLayout>
+
+        <!-- Audio Route Button (Optional) -->
+        <FrameLayout
+            android:id="@+id/audioRouteButton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="48dp"
+            android:background="@drawable/mute_button_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_volume_up"
+                android:tint="@color/teal_accent" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

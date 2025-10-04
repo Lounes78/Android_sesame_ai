@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#6200EE</color>
+    <color name="primary_dark">#3700B3</color>
+    <color name="primary_variant">#BB86FC</color>
+    <color name="secondary">#03DAC6</color>
+    <color name="secondary_dark">#018786</color>
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="error">#B00020</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="on_secondary">#000000</color>
+    <color name="on_background">#000000</color>
+    <color name="on_surface">#000000</color>
+    <color name="on_error">#FFFFFF</color>
+
+    <!-- Message bubbles -->
+    <color name="bubble_out">#E3F2FD</color> <!-- Light blue for outgoing -->
+    <color name="bubble_in">#F1F1F1</color>  <!-- Light gray for incoming -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="status_online">#4CAF50</color>
+    <color name="status_offline">#F44336</color>
+
+    <!-- Material 3 colors -->
+    <color name="md_theme_light_primary">#6750A4</color>
+    <color name="md_theme_light_onPrimary">#FFFFFF</color>
+    <color name="md_theme_light_primaryContainer">#E9DDFF</color>
+    <color name="md_theme_light_onPrimaryContainer">#22005D</color>
+    
+    <!-- Voice Chat UI Colors -->
+    <!-- Teal family for Maya -->
+    <color name="soft_teal">#FF4DB6AC</color>
+    <color name="teal_accent">#FF26A69A</color>
+    <color name="teal_primary">#FF009688</color>
+    <color name="teal_dark">#FF00695C</color>
+    
+    <!-- Aqua/Light Blue for gradients -->
+    <color name="aqua">#FF00BCD4</color>
+    <color name="light_blue">#FF81D4FA</color>
+    <color name="cyan_light">#FFB2EBF2</color>
+    
+    <!-- Coral family for Miles -->
+    <color name="soft_coral">#FFFF8A65</color>
+    <color name="coral_accent">#FFFF7043</color>
+    <color name="coral_primary">#FFFF5722</color>
+    <color name="coral_dark">#FFBF360C</color>
+    
+    <!-- UI colors -->
+    <color name="background_light">#FFF8F9FA</color>
+    <color name="background_card">#FFFFFFFF</color>
+    <color name="text_primary_new">#FF212529</color>
+    <color name="text_secondary_new">#FF6C757D</color>
+    <color name="subtle_gray">#FFF8F9FA</color>
+    <color name="mute_gray">#FFE9ECEF</color>
+    
+    <!-- Status colors -->
+    <color name="success_green">#FF28A745</color>
+    <color name="warning_orange">#FFFD7E14</color>
+    <color name="error_red">#FFDC3545</color>
+    
+    <!-- Additional gradient colors -->
+    <color name="gradient_start_teal">#FF4DB6AC</color>
+    <color name="gradient_middle_aqua">#FF00BCD4</color>
+    <color name="gradient_end_light_blue">#FF81D4FA</color>
+</resources>

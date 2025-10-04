@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sesame AI Voice Chat"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Character:"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@android:color/black" />
+
+    <RadioGroup
+        android:id="@+id/characterRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="32dp">
+
+        <RadioButton
+            android:id="@+id/radioMiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Miles"
+            android:checked="true"
+            android:layout_marginEnd="24dp" />
+
+        <RadioButton
+            android:id="@+id/radioMaya"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Maya" />
+
+    </RadioGroup>
+
+    <!-- Audio Route Selection -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Audio Route:"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@android:color/black" />
+
+    <Spinner
+        android:id="@+id/audioRouteSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp" />
+
+    <Button
+        android:id="@+id/connectButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Connect"
+        android:textSize="16sp"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Disconnected"
+        android:textSize="14sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:id="@+id/instructionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1. Grant microphone permission\n2. Select a character\n3. Choose audio route\n4. Tap Connect to start voice chat\n5. Speak naturally - the AI will respond"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Audio Device Information -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Audio Device Information:"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/audioInfoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Checking audio devices..."
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:background="@android:color/darker_gray"
+        android:padding="12dp"
+        android:textColor="@android:color/white"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
+
+</LinearLayout>
+</ScrollView>
