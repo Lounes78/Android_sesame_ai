@@ -3425,6 +3425,12 @@ int id included 0x7f0900fa
 int id incomingLayout 0x7f0900fb
 int id indeterminate 0x7f0900fc
 int id info 0x7f0900fd
+int id initializationMessage 0x7f090237
+int id initializationOverlay 0x7f090238
+int id initializationProgress 0x7f090239
+int id initializationProgressText 0x7f09023a
+int id initializationSpinner 0x7f09023b
+int id initializationTitle 0x7f09023c
 int id instructionText 0x7f0900fe
 int id invisible 0x7f0900ff
 int id inward 0x7f090100

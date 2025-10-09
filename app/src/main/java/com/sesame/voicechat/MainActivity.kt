@@ -35,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         private const val PERMISSION_REQUEST_CODE = 1001
         
         // Initial tokens for first setup (will be managed by TokenManager)
-        private const val INITIAL_ID_TOKEN = ""
-        private const val INITIAL_REFRESH_TOKEN = ""
+        private const val INITIAL_ID_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImE1YTAwNWU5N2NiMWU0MjczMDBlNTJjZGQ1MGYwYjM2Y2Q4MDYyOWIiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZ3B0IDEiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSjJLdXZELThIQU9NVHRMeW9hajFLcm5JQ3FWRWhLQ1p6UElfRThKSnlLTnhUVXpRPXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Nlc2FtZS1haS1kZW1vIiwiYXVkIjoic2VzYW1lLWFpLWRlbW8iLCJhdXRoX3RpbWUiOjE3NTk1MDQ1MjQsInVzZXJfaWQiOiJFcHQyMVZBd0ZKaHVmZ0tHYmN0YmtEMGREY1gyIiwic3ViIjoiRXB0MjFWQXdGSmh1ZmdLR2JjdGJrRDBkRGNYMiIsImlhdCI6MTc1OTk5OTgyMCwiZXhwIjoxNzYwMDAzNDIwLCJlbWFpbCI6ImdwdDQ5NTkyQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTAwOTc3MzcyODU0NDgxODIxNDAzIl0sImVtYWlsIjpbImdwdDQ5NTkyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6Imdvb2dsZS5jb20ifX0.Jry2EpUvWP9rwH7w5u_4xX82Vkm7-thbSH07A2_cKSzNcvkg3a8eyGij6Wf9FzWMIFOE-zhdigGCMQ1234tDivk-aWSuodpgYyN6jnBUeAixUFmu6_sw1_OafBPOCL_QSUi9ovlBp1Go3B6ooC-dgLdzL4ZgxHqFcFiHBFcQCNzvU82-eHDauBzKTBu246-FxH4PoctiD0Y-W9SozmfJhHnuXQa0MXNq2Mrd3eBzhsNf01Rh9KCU2JyvTmQP4ZzhzKlxR8cZiYuBF_aW9G6nJYgptU0r4Vke1_S5yYqb_bMb_h6kjrP7C9BK6Dr63dVxJ4kpqS6cQtwDAxN0Lufrow"
+        private const val INITIAL_REFRESH_TOKEN = "AMf-vBype8p6-ES7bY3E6hl4Bn1p5KzosYT4LBxjQz_CptDhSsQCFwAsiy8PVdbzwyWiENI1r9ti-Vx5MbGO8YrsWqi0SMEwV8QNyb0fdZzObEsgQKBQ6ICDIURhnjlksCibCdjkY-AKcZ8sJ-vtpGzaOWDBDMpdosutdUPUb_x6wR-2t6cjZfcQ24NmTxEw5PddGUa46X-Cr94GFRGyojoeV3VODfPh5pLF9C7TgMaJPeoTY3MYSoIfBZT8c9XT3cgPDH9ibWlJvgw8_6XnHdVYuIkgVXtmmU5hrQCFdvXiOrt-V3DNojWfqBT2PJHh3c2YdIUePt7RMun0lD3pt3iaUU5QmUpqWKPOSyTNWvGp_wjIi4OAShwVvDU-71FpyFjD13V5kNqeIgwz4Vt8OX7LUpp1p9yzytXMQ3PjnUY0jAa6hzxSrNg"
     }
     
     // UI Components for Call Screen
@@ -48,6 +48,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var muteButton: FrameLayout
     private lateinit var endCallButton: FrameLayout
     private lateinit var muteIcon: ImageView
+    
+    // Initialization Overlay Components
+    private lateinit var initializationOverlay: View
+    private lateinit var initializationTitle: TextView
+    private lateinit var initializationMessage: TextView
+    private lateinit var initializationProgress: android.widget.ProgressBar
+    private lateinit var initializationProgressText: TextView
     
     // Call state
     private var callStartTime: Long = 0
@@ -61,6 +68,7 @@ class MainActivity : AppCompatActivity() {
     private var audioPlayer: AudioPlayer? = null
     private var systemAudioManager: AudioManager? = null
     private lateinit var tokenManager: TokenManager
+    private lateinit var audioFileProcessor: AudioFileProcessor
     
     // State
     private var isConnected = false
@@ -88,6 +96,7 @@ class MainActivity : AppCompatActivity() {
         setupListeners()
         checkPermissions()
         setupTokenManager()
+        setupAudioFileProcessor()
         
         // Auto-connect when call screen opens
         connect()
@@ -103,12 +112,22 @@ class MainActivity : AppCompatActivity() {
         endCallButton = findViewById(R.id.endCallButton)
         muteIcon = findViewById(R.id.muteIcon)
         
+        // Initialize initialization overlay components
+        initializationOverlay = findViewById(R.id.initializationOverlay)
+        initializationTitle = findViewById(R.id.initializationTitle)
+        initializationMessage = findViewById(R.id.initializationMessage)
+        initializationProgress = findViewById(R.id.initializationProgress)
+        initializationProgressText = findViewById(R.id.initializationProgressText)
+        
         // Set character name
         characterName.text = selectedCharacter
         
         // Initialize UI state
         callDuration.text = "00:00"
         connectionStatus.text = "Connecting..."
+        
+        // Hide initialization overlay initially
+        initializationOverlay.visibility = View.GONE
     }
     
     private fun setupAudioSystem() {
@@ -125,6 +144,10 @@ class MainActivity : AppCompatActivity() {
         }
         
         Log.d(TAG, tokenManager.getTokenInfo())
+    }
+    
+    private fun setupAudioFileProcessor() {
+        audioFileProcessor = AudioFileProcessor(this)
     }
     
     // Audio route spinner removed for new UI design
@@ -303,8 +326,11 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "WebSocket connected, setting up audio...")
             connectionStatus.text = "Connected"
             connectionStatus.setTextColor(ContextCompat.getColor(this, R.color.success_green))
-            startCallTimer()
+            // DON'T start timer yet - wait until message is sent
             setupAudio()
+            
+            // Automatically send the pre-recorded audio file after connection
+            sendPreRecordedAudio()
         }
     }
     
@@ -399,10 +425,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             
-            // Start audio components
+            // Start audio components but pause playback initially
             if (audioPlayer?.startPlayback() == true && audioRecordManager?.startRecording() == true) {
                 isConnected = true
                 updateConnectionStatus("Connected", R.color.success_green)
+                
+                // Pause audio playback during initialization to prevent AI responses
+                audioPlayer?.clearQueue() // Clear any existing audio
                 
                 // Start audio processing thread
                 startAudioProcessing()
@@ -638,6 +667,149 @@ class MainActivity : AppCompatActivity() {
         audioRecordManager?.let { manager ->
             val captureMetrics = manager.getCaptureMetrics()
             Log.i(TAG, "Capture Metrics: $captureMetrics")
+        }
+    }
+    
+    private fun sendPreRecordedAudio() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                Log.i(TAG, "🎵 Loading pre-recorded audio file...")
+                
+                // Show initialization overlay
+                runOnUiThread {
+                    showInitializationOverlay()
+                    updateInitializationStatus("Loading audio file...", 0)
+                }
+                
+                val audioChunks = audioFileProcessor.loadWavFile("openai-fm-coral-eternal-optimist.wav")
+                
+                if (audioChunks != null && audioChunks.isNotEmpty()) {
+                    Log.i(TAG, "🎵 Pausing microphone and sending ${audioChunks.size} audio chunks...")
+                    
+                    // PAUSE microphone recording to prevent interference
+                    val wasRecording = audioRecordManager?.isRecording() ?: false
+                    if (wasRecording) {
+                        Log.i(TAG, "🎤 Pausing microphone recording during pre-recorded audio")
+                        audioRecordManager?.stopRecording()
+                    }
+                    
+                    runOnUiThread {
+                        updateInitializationStatus("Sending your message to AI...", 10)
+                    }
+                    
+                    // Send audio chunks directly through WebSocket (bypassing microphone)
+                    for (i in audioChunks.indices) {
+                        val chunk = audioChunks[i]
+                        
+                        // Check if WebSocket is still active
+                        if (!isConnected || sesameWebSocket?.isConnected() != true) {
+                            Log.w(TAG, "WebSocket disconnected, stopping audio send")
+                            break
+                        }
+                        
+                        // Send directly through WebSocket with voice activity indication
+                        val success = sesameWebSocket?.sendAudioData(chunk) ?: false
+                        
+                        if (!success) {
+                            Log.e(TAG, "❌ Failed to send audio chunk $i")
+                            break
+                        }
+                        
+                        // Add small delay between chunks to simulate real-time audio streaming
+                        // Each chunk represents ~64ms of audio (1024 samples at 16kHz)
+                        delay(64) // 64ms delay between chunks
+                        
+                        // Update progress more frequently for smoother animation
+                        val progress = 10 + ((i + 1) * 85) / audioChunks.size // 10% to 95%
+                        runOnUiThread {
+                            updateInitializationStatus("Transmitting audio... (${i + 1}/${audioChunks.size})", progress)
+                        }
+                    }
+                    
+                    // Send a final silence chunk to signal end of speech
+                    runOnUiThread {
+                        updateInitializationStatus("Finalizing transmission...", 95)
+                    }
+                    
+                    val silenceChunk = ByteArray(2048) { 0 } // Silent chunk
+                    sesameWebSocket?.sendAudioData(silenceChunk)
+                    
+                    // Wait a moment before resuming microphone
+                    delay(500) // 500ms pause to ensure AI processes the end of speech
+                    
+                    // RESUME microphone recording
+                    if (wasRecording && isConnected) {
+                        Log.i(TAG, "🎤 Resuming microphone recording after pre-recorded audio")
+                        audioRecordManager?.startRecording()
+                    }
+                    
+                    Log.i(TAG, "✅ Pre-recorded audio sent successfully!")
+                    runOnUiThread {
+                        updateInitializationStatus("Complete! Ready to chat.", 100)
+                        // Small delay to show completion before hiding
+                        CoroutineScope(Dispatchers.Main).launch {
+                            delay(1000)
+                            hideInitializationOverlay()
+                        }
+                    }
+                    
+                } else {
+                    Log.e(TAG, "❌ Failed to load audio file")
+                    runOnUiThread {
+                        hideInitializationOverlay()
+                        Toast.makeText(this@MainActivity, "Failed to load audio file", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error sending pre-recorded audio", e)
+                
+                // Ensure microphone is resumed even if there's an error
+                try {
+                    if (isConnected && audioRecordManager?.isRecording() != true) {
+                        Log.i(TAG, "🎤 Resuming microphone after error")
+                        audioRecordManager?.startRecording()
+                    }
+                } catch (resumeError: Exception) {
+                    Log.e(TAG, "Error resuming microphone", resumeError)
+                }
+                
+                runOnUiThread {
+                    hideInitializationOverlay()
+                    Toast.makeText(this@MainActivity, "Error sending audio: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+    
+    private fun showInitializationOverlay() {
+        initializationOverlay.visibility = View.VISIBLE
+        initializationOverlay.alpha = 0f
+        initializationOverlay.animate()
+            .alpha(1f)
+            .setDuration(300)
+            .start()
+    }
+    
+    private fun hideInitializationOverlay() {
+        initializationOverlay.animate()
+            .alpha(0f)
+            .setDuration(300)
+            .withEndAction {
+                initializationOverlay.visibility = View.GONE
+            }
+            .start()
+    }
+    
+    private fun updateInitializationStatus(message: String, progress: Int) {
+        initializationMessage.text = message
+        initializationProgress.progress = progress
+        initializationProgressText.text = "$progress%"
+        
+        // Update title based on progress
+        when {
+            progress < 10 -> initializationTitle.text = "Initializing..."
+            progress < 95 -> initializationTitle.text = "Cooking..."
+            else -> initializationTitle.text = "Almost Ready..."
         }
     }
 }

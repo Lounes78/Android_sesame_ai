@@ -160,4 +160,84 @@
 
     </LinearLayout>
 
+    <!-- Initialization Overlay Screen -->
+    <RelativeLayout
+        android:id="@+id/initializationOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#DD000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Initialization Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp">
+
+            <!-- Loading Animation Circle -->
+            <ProgressBar
+                android:id="@+id/initializationSpinner"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/teal_accent" />
+
+            <!-- Initialization Title -->
+            <TextView
+                android:id="@+id/initializationTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Initializing..."
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:layout_marginTop="24dp" />
+
+            <!-- Initialization Message -->
+            <TextView
+                android:id="@+id/initializationMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Setting up your conversation with the AI agent"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:layout_marginTop="12dp"
+                android:alpha="0.8" />
+
+            <!-- Progress Bar -->
+            <ProgressBar
+                android:id="@+id/initializationProgress"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginEnd="48dp"
+                android:progressTint="@color/teal_accent"
+                android:progressBackgroundTint="@android:color/darker_gray"
+                android:max="100"
+                android:progress="0" />
+
+            <!-- Progress Text -->
+            <TextView
+                android:id="@+id/initializationProgressText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textSize="14sp"
+                android:textColor="@color/teal_accent"
+                android:gravity="center"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
 </RelativeLayout>

@@ -83,10 +83,9 @@
         <activity
             android:name="com.sesame.voicechat.MainActivity"
             android:exported="false"
-            android:label="Voice Chat"
             android:parentActivityName="com.sesame.voicechat.ContactSelectionActivity"
             android:screenOrientation="unspecified"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ContactSelectionActivity" />

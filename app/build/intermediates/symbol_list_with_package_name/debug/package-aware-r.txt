@@ -3426,6 +3426,12 @@ id included
 id incomingLayout
 id indeterminate
 id info
+id initializationMessage
+id initializationOverlay
+id initializationProgress
+id initializationProgressText
+id initializationSpinner
+id initializationTitle
 id instructionText
 id invisible
 id inward

@@ -92,6 +92,12 @@ id endCallButton
 id greetingText
 id headerSection
 id incomingLayout
+id initializationMessage
+id initializationOverlay
+id initializationProgress
+id initializationProgressText
+id initializationSpinner
+id initializationTitle
 id instructionText
 id layoutTTSOptions
 id mayaCard
