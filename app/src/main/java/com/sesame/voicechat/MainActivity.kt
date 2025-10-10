@@ -35,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         private const val PERMISSION_REQUEST_CODE = 1001
         
         // Initial tokens for first setup (will be managed by TokenManager)
-        private const val INITIAL_ID_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImE1YTAwNWU5N2NiMWU0MjczMDBlNTJjZGQ1MGYwYjM2Y2Q4MDYyOWIiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZ3B0IDEiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSjJLdXZELThIQU9NVHRMeW9hajFLcm5JQ3FWRWhLQ1p6UElfRThKSnlLTnhUVXpRPXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Nlc2FtZS1haS1kZW1vIiwiYXVkIjoic2VzYW1lLWFpLWRlbW8iLCJhdXRoX3RpbWUiOjE3NTk1MDQ1MjQsInVzZXJfaWQiOiJFcHQyMVZBd0ZKaHVmZ0tHYmN0YmtEMGREY1gyIiwic3ViIjoiRXB0MjFWQXdGSmh1ZmdLR2JjdGJrRDBkRGNYMiIsImlhdCI6MTc1OTk5OTgyMCwiZXhwIjoxNzYwMDAzNDIwLCJlbWFpbCI6ImdwdDQ5NTkyQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTAwOTc3MzcyODU0NDgxODIxNDAzIl0sImVtYWlsIjpbImdwdDQ5NTkyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6Imdvb2dsZS5jb20ifX0.Jry2EpUvWP9rwH7w5u_4xX82Vkm7-thbSH07A2_cKSzNcvkg3a8eyGij6Wf9FzWMIFOE-zhdigGCMQ1234tDivk-aWSuodpgYyN6jnBUeAixUFmu6_sw1_OafBPOCL_QSUi9ovlBp1Go3B6ooC-dgLdzL4ZgxHqFcFiHBFcQCNzvU82-eHDauBzKTBu246-FxH4PoctiD0Y-W9SozmfJhHnuXQa0MXNq2Mrd3eBzhsNf01Rh9KCU2JyvTmQP4ZzhzKlxR8cZiYuBF_aW9G6nJYgptU0r4Vke1_S5yYqb_bMb_h6kjrP7C9BK6Dr63dVxJ4kpqS6cQtwDAxN0Lufrow"
-        private const val INITIAL_REFRESH_TOKEN = "AMf-vBype8p6-ES7bY3E6hl4Bn1p5KzosYT4LBxjQz_CptDhSsQCFwAsiy8PVdbzwyWiENI1r9ti-Vx5MbGO8YrsWqi0SMEwV8QNyb0fdZzObEsgQKBQ6ICDIURhnjlksCibCdjkY-AKcZ8sJ-vtpGzaOWDBDMpdosutdUPUb_x6wR-2t6cjZfcQ24NmTxEw5PddGUa46X-Cr94GFRGyojoeV3VODfPh5pLF9C7TgMaJPeoTY3MYSoIfBZT8c9XT3cgPDH9ibWlJvgw8_6XnHdVYuIkgVXtmmU5hrQCFdvXiOrt-V3DNojWfqBT2PJHh3c2YdIUePt7RMun0lD3pt3iaUU5QmUpqWKPOSyTNWvGp_wjIi4OAShwVvDU-71FpyFjD13V5kNqeIgwz4Vt8OX7LUpp1p9yzytXMQ3PjnUY0jAa6hzxSrNg"
+        private const val INITIAL_ID_TOKEN = ""
+        private const val INITIAL_REFRESH_TOKEN = ""
     }
     
     // UI Components for Call Screen
@@ -425,13 +425,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             
-            // Start audio components but pause playback initially
-            if (audioPlayer?.startPlayback() == true && audioRecordManager?.startRecording() == true) {
+            // Start audio components but delay AudioPlayer until after initialization
+            if (audioRecordManager?.startRecording() == true) {
                 isConnected = true
                 updateConnectionStatus("Connected", R.color.success_green)
                 
-                // Pause audio playback during initialization to prevent AI responses
-                audioPlayer?.clearQueue() // Clear any existing audio
+                // AudioPlayer created but not started yet - no incoming audio during initialization
                 
                 // Start audio processing thread
                 startAudioProcessing()
@@ -746,6 +745,9 @@ class MainActivity : AppCompatActivity() {
                     Log.i(TAG, "✅ Pre-recorded audio sent successfully!")
                     runOnUiThread {
                         updateInitializationStatus("Complete! Ready to chat.", 100)
+                        // NOW start AudioPlayer to enable incoming AI responses
+                        audioPlayer?.startPlayback()
+                        Log.i(TAG, "🔊 AudioPlayer started - AI responses now enabled")
                         // Small delay to show completion before hiding
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(1000)
