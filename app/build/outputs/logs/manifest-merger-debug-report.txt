@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-71:12
-INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-71:12
-INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-71:12
-INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-71:12
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-72:12
+INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-72:12
+INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-72:12
+INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-72:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\az03732\.gradle\caches\8.9\transforms\f3f5b93561adc3051da103802bdc17b7\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\az03732\.gradle\caches\8.9\transforms\ad0db0496e6155bb08af86d73ae22667\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\az03732\.gradle\caches\8.9\transforms\c930ef92b16bdd03743f0acbb47e7186\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
@@ -89,8 +89,8 @@ ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\And
 	android:name
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:15:19-69
 application
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:17:5-69:19
-INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:17:5-69:19
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:17:5-70:19
+INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:17:5-70:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\az03732\.gradle\caches\8.9\transforms\f3f5b93561adc3051da103802bdc17b7\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\az03732\.gradle\caches\8.9\transforms\f3f5b93561adc3051da103802bdc17b7\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\az03732\.gradle\caches\8.9\transforms\ad0db0496e6155bb08af86d73ae22667\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -113,90 +113,92 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\az03732\.gradle\ca
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\az03732\.gradle\caches\8.9\transforms\3d49eb1367a93df7af7f206d046a3c3c\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
 	android:extractNativeLibs
 		INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml
+	android:roundIcon
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:24:9-54
+	android:icon
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:22:9-43
+	android:networkSecurityConfig
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:28:9-69
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.12.0] C:\Users\az03732\.gradle\caches\8.9\transforms\3a204146c18cc7a551420345a5f6b4eb\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:24:9-35
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:25:9-35
 	android:label
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:22:9-41
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:23:9-41
 	android:fullBackupContent
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:20:9-54
-	android:roundIcon
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:23:9-54
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:21:9-54
 	tools:targetApi
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:28:9-29
-	android:icon
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:21:9-43
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:29:9-29
 	android:allowBackup
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:18:9-35
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:19:9-35
 	android:theme
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:25:9-65
-	android:networkSecurityConfig
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:27:9-69
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:26:9-65
 	android:dataExtractionRules
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:19:9-65
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:20:9-65
 	android:usesCleartextTraffic
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:26:9-44
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:27:9-44
+	android:name
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:18:9-42
 activity#com.sesame.voicechat.ContactSelectionActivity
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:31:9-51:20
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:32:9-52:20
 	android:screenOrientation
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:35:13-52
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:36:13-52
 	android:label
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:34:13-45
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:35:13-45
 	android:exported
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:33:13-36
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:34:13-36
 	android:theme
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:36:13-69
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:37:13-69
 	android:name
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:32:13-53
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:33:13-53
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.CAR_DOCK+category:name:android.intent.category.CAR_MODE+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:37:13-42:29
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:38:13-43:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:38:17-69
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:39:17-69
 	android:name
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:38:25-66
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:39:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:39:17-77
-	android:name
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:39:27-74
-category#android.intent.category.CAR_DOCK
 ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:40:17-77
 	android:name
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:40:27-74
-category#android.intent.category.CAR_MODE
+category#android.intent.category.CAR_DOCK
 ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:41:17-77
 	android:name
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:41:27-74
+category#android.intent.category.CAR_MODE
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:42:17-77
+	android:name
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:42:27-74
 intent-filter#action:name:android.car.intent.action.CAR_APP
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:44:13-46:29
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:45:13-47:29
 action#android.car.intent.action.CAR_APP
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:45:17-76
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:46:17-76
 	android:name
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:45:25-73
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:46:25-73
 meta-data#distractionOptimized
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:48:13-50:40
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:49:13-51:40
 	android:value
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:50:17-37
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:51:17-37
 	android:name
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:49:17-52
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:50:17-52
 activity#com.sesame.voicechat.MainActivity
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:54:9-68:20
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:55:9-69:20
 	android:screenOrientation
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:57:13-52
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:58:13-52
 	android:parentActivityName
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:59:13-67
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:60:13-67
 	android:exported
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:56:13-37
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:57:13-37
 	android:theme
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:58:13-69
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:59:13-69
 	android:name
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:55:13-41
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:56:13-41
 meta-data#android.support.PARENT_ACTIVITY
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:61:13-63:61
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:62:13-64:61
 	android:value
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:63:17-58
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:64:17-58
 	android:name
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:62:17-63
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:63:17-63
 uses-sdk
 INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml

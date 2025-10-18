@@ -3313,6 +3313,7 @@ int id compress 0x7f09008a
 int id confirm_button 0x7f09008b
 int id connectButton 0x7f09008c
 int id connectionStatus 0x7f09008d
+int id connectionStatusText 0x7f090252
 int id constraint 0x7f09008e
 int id container 0x7f09008f
 int id content 0x7f090090
@@ -3477,7 +3478,7 @@ int id material_timepicker_ok_button 0x7f090128
 int id material_timepicker_view 0x7f090129
 int id material_value_index 0x7f09012a
 int id matrix 0x7f09012b
-int id mayaCard 0x7f09012c
+int id mayaConnectButton 0x7f090253
 int id media_actions 0x7f09012d
 int id media_controller_compat_view_tag 0x7f09012e
 int id message 0x7f09012f
@@ -3485,7 +3486,6 @@ int id messageLayout 0x7f090130
 int id message_container 0x7f090131
 int id message_icon 0x7f090132
 int id middle 0x7f090133
-int id milesCard 0x7f090134
 int id mini 0x7f090135
 int id month_grid 0x7f090136
 int id month_navigation_bar 0x7f090137
@@ -3571,6 +3571,7 @@ int id pathRelative 0x7f090186
 int id peekHeight 0x7f090187
 int id percent 0x7f090188
 int id pin 0x7f090189
+int id poolStatusText 0x7f09023f
 int id position 0x7f09018a
 int id postLayout 0x7f09018b
 int id pressed 0x7f09018c

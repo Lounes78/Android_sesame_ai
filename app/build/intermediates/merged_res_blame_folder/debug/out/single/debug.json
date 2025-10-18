@@ -4,6 +4,10 @@
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\contact_selector.xml"
     },
     {
+        "merged": "com.sesame.voicechat.app-merged_res-34:/layout_activity_contact_selection.xml.flat",
+        "source": "com.sesame.voicechat.app-main-36:/layout/activity_contact_selection.xml"
+    },
+    {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\mipmap-xxhdpi_ic_launcher.webp.flat",
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\mipmap-xxhdpi\\ic_launcher.webp"
     },
@@ -134,10 +138,6 @@
     {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\mipmap-hdpi_ic_launcher.webp.flat",
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\mipmap-hdpi\\ic_launcher.webp"
-    },
-    {
-        "merged": "com.sesame.voicechat.app-merged_res-34:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "com.sesame.voicechat.app-main-36:/drawable/ic_launcher_foreground.xml"
     },
     {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_ic_launcher_foreground.xml.flat",

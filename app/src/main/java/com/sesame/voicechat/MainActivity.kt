@@ -34,9 +34,7 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
         private const val PERMISSION_REQUEST_CODE = 1001
         
-        // Initial tokens for first setup (will be managed by TokenManager)
-        private const val INITIAL_ID_TOKEN = ""
-        private const val INITIAL_REFRESH_TOKEN = ""
+        // Tokens are now loaded securely from configuration file
     }
     
     // UI Components for Call Screen
@@ -69,11 +67,13 @@ class MainActivity : AppCompatActivity() {
     private var systemAudioManager: AudioManager? = null
     private lateinit var tokenManager: TokenManager
     private lateinit var audioFileProcessor: AudioFileProcessor
+    private lateinit var sessionManager: SessionManager
     
     // State
     private var isConnected = false
     private var selectedCharacter = "Miles"
     private var selectedAudioRoute = AudioRoute.AUTO
+    private var currentSession: SessionManager.SessionState? = null
     
     // Audio routing options
     enum class AudioRoute(val displayName: String) {
@@ -88,8 +88,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_call)
         
-        // Get character from intent
-        selectedCharacter = intent.getStringExtra("CHARACTER_NAME") ?: "Maya"
+        // Get character from intent - force Maya for now since session pool only supports Maya
+        selectedCharacter = "Maya"
         
         initializeViews()
         setupAudioSystem()
@@ -97,6 +97,7 @@ class MainActivity : AppCompatActivity() {
         checkPermissions()
         setupTokenManager()
         setupAudioFileProcessor()
+        setupSessionManager()
         
         // Auto-connect when call screen opens
         connect()
@@ -139,8 +140,17 @@ class MainActivity : AppCompatActivity() {
         
         // Store initial tokens if not already stored
         if (!tokenManager.hasStoredTokens()) {
-            Log.i(TAG, "🔐 Storing initial tokens...")
-            tokenManager.storeTokens(INITIAL_ID_TOKEN, INITIAL_REFRESH_TOKEN)
+            Log.i(TAG, "🔐 Loading tokens from secure configuration...")
+            
+            val tokenPair = TokenConfig.loadTokens(this)
+            if (tokenPair != null) {
+                Log.i(TAG, "✅ Storing tokens from configuration file...")
+                tokenManager.storeTokens(tokenPair.idToken, tokenPair.refreshToken)
+            } else {
+                Log.e(TAG, "❌ Failed to load tokens from configuration - app may not function properly")
+                Toast.makeText(this, "Configuration error: Unable to load authentication tokens", Toast.LENGTH_LONG).show()
+                return
+            }
         }
         
         Log.d(TAG, tokenManager.getTokenInfo())
@@ -148,6 +158,12 @@ class MainActivity : AppCompatActivity() {
     
     private fun setupAudioFileProcessor() {
         audioFileProcessor = AudioFileProcessor(this)
+    }
+    
+    private fun setupSessionManager() {
+        sessionManager = SessionManager.getInstance(this)
+        sessionManager.initialize(tokenManager)
+        Log.i(TAG, "🏊 SessionManager initialized")
     }
     
     // Audio route spinner removed for new UI design
@@ -250,46 +266,50 @@ class MainActivity : AppCompatActivity() {
             return
         }
         
-        updateConnectionStatus("Connecting...", R.color.warning_orange)
+        updateConnectionStatus("Finding best session...", R.color.warning_orange)
         
-        // Use coroutine to get valid token
+        // Use coroutine to get session from pool
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                updateConnectionStatus("Getting token...", R.color.warning_orange)
+                // Get the best available Maya session from pool
+                val sessionState = sessionManager.getBestAvailableSession("Maya")
                 
-                // Get valid token (automatically refreshes if needed)
-                val validToken = tokenManager.getValidIdToken()
-                
-                if (validToken == null) {
-                    onWebSocketError("Failed to get valid authentication token")
+                if (sessionState == null) {
+                    onWebSocketError("No available Maya sessions in pool. Please wait and try again.")
                     return@launch
                 }
                 
-                updateConnectionStatus("Connecting...", R.color.warning_orange)
+                currentSession = sessionState
+                sesameWebSocket = sessionState.webSocket
                 
-                // Initialize WebSocket with valid token
-                withContext(Dispatchers.IO) {
-                    sesameWebSocket = SesameWebSocket(validToken, selectedCharacter).apply {
-                        onConnectCallback = {
-                            runOnUiThread { onWebSocketConnected() }
-                        }
-                        onDisconnectCallback = {
-                            runOnUiThread { onWebSocketDisconnected() }
-                        }
-                        onErrorCallback = { error ->
-                            runOnUiThread { onWebSocketError(error) }
-                        }
+                // Character is always Maya for now
+                selectedCharacter = "Maya"
+                characterName.text = selectedCharacter
+                
+                val status = if (sessionState.isPromptComplete) {
+                    "Session ready! Starting immediately..."
+                } else {
+                    "Session ${(sessionState.promptProgress * 100).toInt()}% ready..."
+                }
+                updateConnectionStatus(status, R.color.warning_orange)
+                
+                // Session is already connected, just set up our callbacks
+                sessionState.webSocket.apply {
+                    onConnectCallback = {
+                        runOnUiThread { onWebSocketConnected() }
                     }
-                    
-                    // Connect to WebSocket
-                    if (sesameWebSocket?.connect() == true) {
-                        Log.d(TAG, "WebSocket connection initiated with refreshed token")
-                    } else {
-                        runOnUiThread {
-                            onWebSocketError("Failed to initiate connection")
-                        }
+                    onDisconnectCallback = {
+                        runOnUiThread { onWebSocketDisconnected() }
+                    }
+                    onErrorCallback = { error ->
+                        runOnUiThread { onWebSocketError(error) }
                     }
                 }
+                
+                // Immediately proceed to connected state
+                onWebSocketConnected()
+                
+                Log.d(TAG, "🎯 Using pre-warmed session: $selectedCharacter (${if (sessionState.isPromptComplete) "ready" else "${(sessionState.promptProgress * 100).toInt()}% complete"})")
                 
             } catch (e: Exception) {
                 Log.e(TAG, "Connection error", e)
@@ -301,36 +321,101 @@ class MainActivity : AppCompatActivity() {
     private fun disconnect() {
         updateConnectionStatus("Disconnecting...", R.color.warning_orange)
         
-        // Stop audio components
+        // Stop only the local audio components for this activity
         audioRecordManager?.stopRecording()
         audioPlayer?.stopPlayback()
         
-        // Reset audio routing
-        resetAudioRouting()
+        // DON'T reset global audio routing - let background sessions continue using audio system
+        // resetAudioRouting() // Commented out to avoid affecting other sessions
         
-        // Disconnect WebSocket
-        sesameWebSocket?.disconnect()
+        // Only remove the current session being used - others should continue
+        currentSession?.let { session ->
+            sessionManager.removeSession(session)
+            Log.i(TAG, "🗑️ Removed current session only - ${sessionManager.getPoolStatus()}")
+        }
         
-        // Clean up
+        // Clean up only local references - don't touch global systems
         audioRecordManager = null
         audioPlayer = null
         sesameWebSocket = null
+        currentSession = null
         
         isConnected = false
         updateConnectionStatus("Disconnected", R.color.error_red)
         stopCallTimer()
+        
+        Log.i(TAG, "📱 Local disconnect complete - background sessions unaffected")
     }
     
     private fun onWebSocketConnected() {
         runOnUiThread {
-            Log.d(TAG, "WebSocket connected, setting up audio...")
+            Log.d(TAG, "Using pre-warmed session, setting up audio...")
             connectionStatus.text = "Connected"
             connectionStatus.setTextColor(ContextCompat.getColor(this, R.color.success_green))
-            // DON'T start timer yet - wait until message is sent
-            setupAudio()
             
-            // Automatically send the pre-recorded audio file after connection
-            sendPreRecordedAudio()
+            // Check if session prompt is complete
+            currentSession?.let { session ->
+                if (session.isPromptComplete) {
+                    Log.i(TAG, "✅ Session prompt already complete - ready for immediate chat!")
+                    Toast.makeText(this, "Connected instantly! Session was pre-warmed.", Toast.LENGTH_SHORT).show()
+                    
+                    setupAudio()
+                    startCallTimer()
+                } else {
+                    Log.i(TAG, "⏳ Session prompt ${(session.promptProgress * 100).toInt()}% complete - showing progress")
+                    Toast.makeText(this, "Connected! Session finishing initialization...", Toast.LENGTH_SHORT).show()
+                    
+                    // Show initialization overlay and track progress
+                    showInitializationOverlay()
+                    trackSessionProgress()
+                    
+                    // Setup audio but don't start timer yet
+                    setupAudio()
+                }
+            } ?: run {
+                // Fallback if no session info
+                setupAudio()
+                startCallTimer()
+            }
+        }
+    }
+    
+    private fun trackSessionProgress() {
+        CoroutineScope(Dispatchers.Main).launch {
+            while (isConnected) {
+                // Check session progress directly from SessionManager to avoid reference issues
+                val sessionProgress = sessionManager.getSessionProgress()
+                
+                if (sessionProgress != null) {
+                    val (progress, isComplete) = sessionProgress
+                    val progressPercent = (progress * 100).toInt()
+                    
+                    when {
+                        isComplete -> {
+                            updateInitializationStatus("Complete! Ready to chat.", 100)
+                            
+                            // NOW start AudioPlayer - session is complete
+                            audioPlayer?.startPlayback()
+                            Log.i(TAG, "🔊 AudioPlayer started - session complete, AI responses now enabled")
+                            
+                            delay(1000)
+                            hideInitializationOverlay()
+                            startCallTimer()
+                            break
+                        }
+                        progressPercent > 0 -> {
+                            updateInitializationStatus("Continuing initialization... $progressPercent%", progressPercent)
+                        }
+                        else -> {
+                            updateInitializationStatus("Preparing session...", 0)
+                        }
+                    }
+                } else {
+                    updateInitializationStatus("Preparing session...", 0)
+                }
+                
+                delay(500) // Update every 500ms
+            }
         }
     }
     
@@ -393,6 +478,20 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             
+            // Only start AudioPlayer if session is complete, otherwise wait
+            currentSession?.let { session ->
+                if (session.isPromptComplete) {
+                    audioPlayer?.startPlayback()
+                    Log.i(TAG, "🔊 AudioPlayer started - AI responses enabled (session complete)")
+                } else {
+                    Log.i(TAG, "🔇 AudioPlayer created but not started - waiting for session to complete")
+                }
+            } ?: run {
+                // Fallback - start immediately if no session info
+                audioPlayer?.startPlayback()
+                Log.i(TAG, "🔊 AudioPlayer started - AI responses enabled (fallback)")
+            }
+            
             // Initialize audio manager with car optimizations
             audioRecordManager = com.sesame.voicechat.AudioManager().apply {
                 // Apply car optimizations if needed
@@ -425,12 +524,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             
-            // Start audio components but delay AudioPlayer until after initialization
+            // Start audio components immediately
             if (audioRecordManager?.startRecording() == true) {
                 isConnected = true
                 updateConnectionStatus("Connected", R.color.success_green)
-                
-                // AudioPlayer created but not started yet - no incoming audio during initialization
                 
                 // Start audio processing thread
                 startAudioProcessing()
@@ -440,7 +537,10 @@ class MainActivity : AppCompatActivity() {
                     else -> "using ${selectedAudioRoute.displayName}"
                 }
                 val modeInfo = if (isCarMode) " (Car optimized)" else " (Phone optimized)"
-                Toast.makeText(this, "Voice chat started $routeInfo$modeInfo! Speak naturally.", Toast.LENGTH_LONG).show()
+                val sessionStatus = currentSession?.let { session ->
+                    if (session.isPromptComplete) " (instant connection)" else " (session ready)"
+                } ?: ""
+                Toast.makeText(this, "Voice chat started $routeInfo$modeInfo$sessionStatus! Speak naturally.", Toast.LENGTH_LONG).show()
             } else {
                 onWebSocketError("Failed to start audio components")
             }
@@ -639,6 +739,14 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         disconnect()
+        
+        // Reset audio routing only when activity is truly destroyed
+        resetAudioRouting()
+        
+        // Don't shutdown SessionManager when just finishing the call activity
+        // SessionManager should keep running in the background for the entire app lifecycle
+        // It will be managed by the Application class
+        Log.i(TAG, "📱 MainActivity destroyed - audio routing reset, SessionManager continues running")
     }
     
     override fun onPause() {
@@ -669,117 +777,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
+    // Pre-recorded audio is now handled by SessionManager in background
+    // This function is no longer needed but kept for potential future use
     private fun sendPreRecordedAudio() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                Log.i(TAG, "🎵 Loading pre-recorded audio file...")
-                
-                // Show initialization overlay
-                runOnUiThread {
-                    showInitializationOverlay()
-                    updateInitializationStatus("Loading audio file...", 0)
-                }
-                
-                val audioChunks = audioFileProcessor.loadWavFile("openai-fm-coral-eternal-optimist.wav")
-                
-                if (audioChunks != null && audioChunks.isNotEmpty()) {
-                    Log.i(TAG, "🎵 Pausing microphone and sending ${audioChunks.size} audio chunks...")
-                    
-                    // PAUSE microphone recording to prevent interference
-                    val wasRecording = audioRecordManager?.isRecording() ?: false
-                    if (wasRecording) {
-                        Log.i(TAG, "🎤 Pausing microphone recording during pre-recorded audio")
-                        audioRecordManager?.stopRecording()
-                    }
-                    
-                    runOnUiThread {
-                        updateInitializationStatus("Sending your message to AI...", 10)
-                    }
-                    
-                    // Send audio chunks directly through WebSocket (bypassing microphone)
-                    for (i in audioChunks.indices) {
-                        val chunk = audioChunks[i]
-                        
-                        // Check if WebSocket is still active
-                        if (!isConnected || sesameWebSocket?.isConnected() != true) {
-                            Log.w(TAG, "WebSocket disconnected, stopping audio send")
-                            break
-                        }
-                        
-                        // Send directly through WebSocket with voice activity indication
-                        val success = sesameWebSocket?.sendAudioData(chunk) ?: false
-                        
-                        if (!success) {
-                            Log.e(TAG, "❌ Failed to send audio chunk $i")
-                            break
-                        }
-                        
-                        // Add small delay between chunks to simulate real-time audio streaming
-                        // Each chunk represents ~64ms of audio (1024 samples at 16kHz)
-                        delay(64) // 64ms delay between chunks
-                        
-                        // Update progress more frequently for smoother animation
-                        val progress = 10 + ((i + 1) * 85) / audioChunks.size // 10% to 95%
-                        runOnUiThread {
-                            updateInitializationStatus("Transmitting audio... (${i + 1}/${audioChunks.size})", progress)
-                        }
-                    }
-                    
-                    // Send a final silence chunk to signal end of speech
-                    runOnUiThread {
-                        updateInitializationStatus("Finalizing transmission...", 95)
-                    }
-                    
-                    val silenceChunk = ByteArray(2048) { 0 } // Silent chunk
-                    sesameWebSocket?.sendAudioData(silenceChunk)
-                    
-                    // Wait a moment before resuming microphone
-                    delay(500) // 500ms pause to ensure AI processes the end of speech
-                    
-                    // RESUME microphone recording
-                    if (wasRecording && isConnected) {
-                        Log.i(TAG, "🎤 Resuming microphone recording after pre-recorded audio")
-                        audioRecordManager?.startRecording()
-                    }
-                    
-                    Log.i(TAG, "✅ Pre-recorded audio sent successfully!")
-                    runOnUiThread {
-                        updateInitializationStatus("Complete! Ready to chat.", 100)
-                        // NOW start AudioPlayer to enable incoming AI responses
-                        audioPlayer?.startPlayback()
-                        Log.i(TAG, "🔊 AudioPlayer started - AI responses now enabled")
-                        // Small delay to show completion before hiding
-                        CoroutineScope(Dispatchers.Main).launch {
-                            delay(1000)
-                            hideInitializationOverlay()
-                        }
-                    }
-                    
-                } else {
-                    Log.e(TAG, "❌ Failed to load audio file")
-                    runOnUiThread {
-                        hideInitializationOverlay()
-                        Toast.makeText(this@MainActivity, "Failed to load audio file", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error sending pre-recorded audio", e)
-                
-                // Ensure microphone is resumed even if there's an error
-                try {
-                    if (isConnected && audioRecordManager?.isRecording() != true) {
-                        Log.i(TAG, "🎤 Resuming microphone after error")
-                        audioRecordManager?.startRecording()
-                    }
-                } catch (resumeError: Exception) {
-                    Log.e(TAG, "Error resuming microphone", resumeError)
-                }
-                
-                runOnUiThread {
-                    hideInitializationOverlay()
-                    Toast.makeText(this@MainActivity, "Error sending audio: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
+        Log.i(TAG, "📢 Pre-recorded audio already sent by session pool - skipping")
+        // Session pool has already handled the pre-recorded audio
+        // Just log that we're using a pre-warmed session
+        currentSession?.let { session ->
+            val status = if (session.isPromptComplete) "complete" else "${(session.promptProgress * 100).toInt()}%"
+            Log.i(TAG, "✅ Using pre-warmed session - prompt $status")
         }
     }
     

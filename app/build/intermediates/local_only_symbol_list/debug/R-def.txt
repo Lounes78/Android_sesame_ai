@@ -85,6 +85,7 @@ id characterName
 id characterRadioGroup
 id connectButton
 id connectionStatus
+id connectionStatusText
 id controlsSection
 id divider
 id edtMessage
@@ -100,12 +101,12 @@ id initializationSpinner
 id initializationTitle
 id instructionText
 id layoutTTSOptions
-id mayaCard
+id mayaConnectButton
 id messageLayout
-id milesCard
 id muteButton
 id muteIcon
 id outgoingLayout
+id poolStatusText
 id pulseBackground
 id radioF5
 id radioFish

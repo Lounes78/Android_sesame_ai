@@ -5,3 +5,7 @@ CAR_AUDIO_LAG_ANALYSIS.md
 local.properties
 gradle.properties
 gradle
+
+# Security - Keep tokens private
+app/src/main/assets/tokens.properties
+tokens.properties

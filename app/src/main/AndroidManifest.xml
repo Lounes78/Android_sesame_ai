@@ -15,6 +15,7 @@
     <uses-feature android:name="android.software.car.templates_host" android:required="true" />
 
     <application
+        android:name=".SesameApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"

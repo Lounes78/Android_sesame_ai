@@ -3314,6 +3314,7 @@ id compress
 id confirm_button
 id connectButton
 id connectionStatus
+id connectionStatusText
 id constraint
 id container
 id content
@@ -3478,7 +3479,7 @@ id material_timepicker_ok_button
 id material_timepicker_view
 id material_value_index
 id matrix
-id mayaCard
+id mayaConnectButton
 id media_actions
 id media_controller_compat_view_tag
 id message
@@ -3486,7 +3487,6 @@ id messageLayout
 id message_container
 id message_icon
 id middle
-id milesCard
 id mini
 id month_grid
 id month_navigation_bar
@@ -3572,6 +3572,7 @@ id pathRelative
 id peekHeight
 id percent
 id pin
+id poolStatusText
 id position
 id postLayout
 id pressed
