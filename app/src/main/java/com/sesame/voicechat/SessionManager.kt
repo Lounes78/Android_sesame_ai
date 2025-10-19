@@ -41,6 +41,8 @@ class SessionManager private constructor(private val context: Context) {
     private val sessionPool = ConcurrentLinkedQueue<SessionState>()
     private val isRunning = AtomicBoolean(false)
     private val isInitialPoolCreation = AtomicBoolean(true)
+    private val pendingCreations = AtomicInteger(0) // Track sessions being created to prevent overshooting
+    private val sessionCounter = AtomicInteger(0) // Simple sequential counter for session numbers
     private lateinit var tokenManager: TokenManager
     private lateinit var audioFileProcessor: AudioFileProcessor
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -73,26 +75,52 @@ class SessionManager private constructor(private val context: Context) {
         val currentSessions = sessionPool.size
         val availableSessions = sessionPool.count { it.isAvailable && !it.isInUse }
         val connectedSessions = sessionPool.count { it.webSocket.isConnected() }
+        val pending = pendingCreations.get()
         
-        Log.d(TAG, "🏊 Pool status: $currentSessions total, $availableSessions available, $connectedSessions connected")
+        Log.d(TAG, "🏊 Pool status: $currentSessions total, $availableSessions available, $connectedSessions connected, $pending pending")
         
-        // Only remove truly dead sessions (disconnected WebSocket or cancelled job)
+        // Only remove truly dead sessions, but give new sessions time to connect
+        val currentTime = System.currentTimeMillis()
+        val GRACE_PERIOD_MS = 15000L // 15 seconds grace period for new sessions to connect
+        
         val iterator = sessionPool.iterator()
         while (iterator.hasNext()) {
             val session = iterator.next()
-            if (!session.webSocket.isConnected() || session.job.isCancelled) {
-                Log.d(TAG, "🗑️ Removing dead session for ${session.character}")
+            val sessionAge = currentTime - session.createdAt
+            
+            // Only consider removal if session is old enough AND (not connected OR job cancelled)
+            val isOldEnough = sessionAge > GRACE_PERIOD_MS
+            val isActuallyDead = !session.webSocket.isConnected() || session.job.isCancelled
+            
+            if (isOldEnough && isActuallyDead) {
+                Log.d(TAG, "🗑️ Removing dead session for ${session.character} (age: ${sessionAge/1000}s)")
                 session.job.cancel()
                 iterator.remove()
+            } else if (!isOldEnough && !session.webSocket.isConnected()) {
+                Log.d(TAG, "⏳ Keeping new session for ${session.character} (age: ${sessionAge/1000}s, still connecting)")
             }
         }
         
-        // Add new sessions ONLY to maintain the exact pool size of 10
-        val sessionsToCreate = POOL_SIZE - sessionPool.size
+        // Add new sessions ONLY to maintain the exact pool size of 10 (including pending)
+        val totalExpected = sessionPool.size + pendingCreations.get()
+        val sessionsToCreate = POOL_SIZE - totalExpected
         if (sessionsToCreate > 0) {
-            Log.i(TAG, "🆕 Creating $sessionsToCreate new sessions to maintain pool size")
-            repeat(sessionsToCreate) {
-                createNewSession()
+            Log.i(TAG, "🆕 Creating $sessionsToCreate new sessions to maintain pool size (total: $totalExpected/$POOL_SIZE)")
+            // Track pending creations to prevent overshooting
+            pendingCreations.addAndGet(sessionsToCreate)
+            
+            // Create replacement sessions with staggered delays to avoid server overload
+            repeat(sessionsToCreate) { index ->
+                scope.launch {
+                    try {
+                        // Add 2-second delay between each replacement session creation
+                        delay(index * 2000L)
+                        createNewSession()
+                    } finally {
+                        // Decrement pending counter whether success or failure
+                        pendingCreations.decrementAndGet()
+                    }
+                }
             }
         }
         
@@ -116,31 +144,46 @@ class SessionManager private constructor(private val context: Context) {
             
             // Determine if this is initial pool creation or a replacement
             val isReplacement = !isInitialPoolCreation.get()
-            val sessionIndex = if (isReplacement) {
-                Log.i(TAG, "🚀 Creating replacement session - starting immediately")
-                0 // No delay for replacement sessions
+            val promptLengthSeconds = 60L // Approximate prompt duration in seconds
+            val intervalSeconds = promptLengthSeconds / POOL_SIZE // 6 seconds
+            
+            val (sessionIndex, delaySeconds) = if (isReplacement) {
+                // For replacement sessions, calculate optimal timing to maintain rotation
+                val replacementNumber = sessionCounter.incrementAndGet()
+                val currentTime = System.currentTimeMillis()
+                val existingSessions = sessionPool.toList()
+                
+                // Calculate when the next slot should start based on optimal rotation
+                val nextOptimalStartTime = if (existingSessions.isNotEmpty()) {
+                    // Find the most recent session start time and add interval
+                    val lastStartTime = existingSessions.maxOfOrNull { it.createdAt } ?: currentTime
+                    val timeSinceLastStart = currentTime - lastStartTime
+                    val nextSlotDelay = Math.max(0L, intervalSeconds * 1000L - timeSinceLastStart)
+                    nextSlotDelay / 1000L // Convert to seconds
+                } else {
+                    0L // No existing sessions, start immediately
+                }
+                
+                Log.i(TAG, "🔄 Creating replacement session #$replacementNumber - delayed ${nextOptimalStartTime}s to maintain rotation")
+                Pair(replacementNumber, nextOptimalStartTime)
             } else {
                 // For initial pool creation, use staggered timing based on current count
-                val currentIndex = sessionPool.size
-                Log.i(TAG, "🌱 Creating initial session #${currentIndex + 1} with staggered timing")
-                currentIndex
+                val sessionNumber = sessionCounter.incrementAndGet()
+                Log.i(TAG, "🌱 Creating initial session #${sessionNumber} with staggered timing")
+                Pair(sessionNumber, (sessionNumber - 1) * intervalSeconds)
             }
             
-            val promptLengthSeconds = 60L // Approximate prompt duration in seconds
-            val intervalSeconds = promptLengthSeconds / POOL_SIZE
-            val delaySeconds = if (isReplacement) 0L else sessionIndex * intervalSeconds
-            
-            Log.i(TAG, "🎬 Creating new session #${sessionIndex + 1} for $character (will start prompt in ${delaySeconds}s) [${promptLengthSeconds}s/${POOL_SIZE} = ${intervalSeconds}s intervals]")
+            Log.i(TAG, "🎬 Creating new session #${sessionIndex} for $character (will start prompt in ${delaySeconds}s) [${promptLengthSeconds}s/${POOL_SIZE} = ${intervalSeconds}s intervals]")
             
             val webSocket = SesameWebSocket(validToken, character).apply {
                 onConnectCallback = {
-                    Log.d(TAG, "✅ Background session #${sessionIndex + 1} connected for $character")
+                    Log.d(TAG, "✅ Background session #${sessionIndex} connected for $character")
                 }
                 onDisconnectCallback = {
-                    Log.d(TAG, "❌ Background session #${sessionIndex + 1} disconnected for $character")
+                    Log.d(TAG, "❌ Background session #${sessionIndex} disconnected for $character")
                 }
                 onErrorCallback = { error ->
-                    Log.e(TAG, "Background session #${sessionIndex + 1} error for $character: $error")
+                    Log.e(TAG, "Background session #${sessionIndex} error for $character: $error")
                 }
             }
             
@@ -157,12 +200,12 @@ class SessionManager private constructor(private val context: Context) {
                         if (webSocket.isConnected()) {
                             // Wait for the staggered delay before starting prompt
                             if (delaySeconds > 0) {
-                                Log.i(TAG, "⏳ Session #${sessionIndex + 1} waiting ${delaySeconds}s before starting prompt...")
+                                Log.i(TAG, "⏳ Session #${sessionIndex} waiting ${delaySeconds}s before starting prompt...")
                                 delay(delaySeconds * 1000)
                             }
                             
                             // Send pre-recorded audio in background
-                            sendPreRecordedAudioToSession(webSocket, character, sessionIndex + 1)
+                            sendPreRecordedAudioToSession(webSocket, character, sessionIndex)
                         }
                     } catch (e: Exception) {
                         Log.e(TAG, "Session job error for $character #${sessionIndex + 1}", e)
@@ -177,7 +220,7 @@ class SessionManager private constructor(private val context: Context) {
                 )
                 
                 sessionPool.offer(sessionState)
-                Log.i(TAG, "➕ Added session #${sessionIndex + 1} for $character to pool (${sessionPool.size}/$POOL_SIZE) [6s intervals]")
+                Log.i(TAG, "➕ Added session #${sessionIndex} for $character to pool (${sessionPool.size}/$POOL_SIZE) [6s intervals]")
             }
             
         } catch (e: Exception) {
@@ -249,7 +292,12 @@ class SessionManager private constructor(private val context: Context) {
                             sessionPool.remove(state)
                             
                             // Create a new session to maintain pool size
-                            createNewSession()
+                            pendingCreations.incrementAndGet()
+                            try {
+                                createNewSession()
+                            } finally {
+                                pendingCreations.decrementAndGet()
+                            }
                         } else {
                             Log.i(TAG, "📞 Session #$sessionNumber ($character) is in use - keeping it")
                         }
@@ -313,8 +361,13 @@ class SessionManager private constructor(private val context: Context) {
         Log.d(TAG, "🗑️ Removed session ${sessionState.character} from pool")
         
         // Create a replacement session to maintain pool size
+        pendingCreations.incrementAndGet()
         scope.launch {
-            createNewSession()
+            try {
+                createNewSession()
+            } finally {
+                pendingCreations.decrementAndGet()
+            }
         }
     }
     

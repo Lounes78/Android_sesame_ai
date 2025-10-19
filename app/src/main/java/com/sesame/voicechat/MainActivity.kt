@@ -331,7 +331,7 @@ class MainActivity : AppCompatActivity() {
         // Only remove the current session being used - others should continue
         currentSession?.let { session ->
             sessionManager.removeSession(session)
-            Log.i(TAG, "🗑️ Removed current session only - ${sessionManager.getPoolStatus()}")
+            Log.i(TAG, "�️ Removed current session only - ${sessionManager.getPoolStatus()}")
         }
         
         // Clean up only local references - don't touch global systems
