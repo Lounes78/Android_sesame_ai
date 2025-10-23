@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-72:12
-INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-72:12
-INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-72:12
-INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-72:12
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-90:12
+INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-90:12
+INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-90:12
+INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:2:1-90:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\az03732\.gradle\caches\8.9\transforms\f3f5b93561adc3051da103802bdc17b7\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\az03732\.gradle\caches\8.9\transforms\ad0db0496e6155bb08af86d73ae22667\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\az03732\.gradle\caches\8.9\transforms\c930ef92b16bdd03743f0acbb47e7186\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
@@ -89,8 +89,8 @@ ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\And
 	android:name
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:15:19-69
 application
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:17:5-70:19
-INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:17:5-70:19
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:17:5-88:19
+INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:17:5-88:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\az03732\.gradle\caches\8.9\transforms\f3f5b93561adc3051da103802bdc17b7\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\az03732\.gradle\caches\8.9\transforms\f3f5b93561adc3051da103802bdc17b7\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\az03732\.gradle\caches\8.9\transforms\ad0db0496e6155bb08af86d73ae22667\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -139,7 +139,7 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\az03732\.gradle\ca
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:27:9-44
 	android:name
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:18:9-42
-activity#com.sesame.voicechat.ContactSelectionActivity
+activity#com.sesame.voicechat.ConfigurationActivity
 ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:32:9-52:20
 	android:screenOrientation
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:36:13-52
@@ -150,7 +150,7 @@ ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\And
 	android:theme
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:37:13-69
 	android:name
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:33:13-53
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:33:13-50
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.CAR_DOCK+category:name:android.intent.category.CAR_MODE+category:name:android.intent.category.LAUNCHER
 ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:38:13-43:29
 action#android.intent.action.MAIN
@@ -181,24 +181,38 @@ ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\And
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:51:17-37
 	android:name
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:50:17-52
-activity#com.sesame.voicechat.MainActivity
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:55:9-69:20
+activity#com.sesame.voicechat.ContactSelectionActivity
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:55:9-70:20
 	android:screenOrientation
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:58:13-52
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:59:13-52
 	android:parentActivityName
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:60:13-67
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:61:13-64
+	android:label
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:58:13-45
 	android:exported
 		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:57:13-37
 	android:theme
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:59:13-69
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:60:13-69
 	android:name
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:56:13-41
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:56:13-53
 meta-data#android.support.PARENT_ACTIVITY
-ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:62:13-64:61
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:63:13-65:58
 	android:value
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:64:17-58
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:65:17-55
 	android:name
-		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:63:17-63
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:64:17-63
+activity#com.sesame.voicechat.MainActivity
+ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:73:9-87:20
+	android:screenOrientation
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:76:13-52
+	android:parentActivityName
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:78:13-67
+	android:exported
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:75:13-37
+	android:theme
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:77:13-69
+	android:name
+		ADDED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml:74:13-41
 uses-sdk
 INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\az03732\Desktop\sesame_ai\android_sesame_ai\app\src\main\AndroidManifest.xml

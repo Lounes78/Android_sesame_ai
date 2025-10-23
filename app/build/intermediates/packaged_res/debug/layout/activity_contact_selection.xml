@@ -25,60 +25,133 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="2">
 
-        <!-- Maya Connect Button -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/mayaConnectButton"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center"
-            app:cardCornerRadius="150dp"
-            app:cardElevation="12dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/blue_card_background"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Maya"
-                    android:textSize="36sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/white"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/connectionStatusText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tap to connect"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/white"
-                    android:alpha="0.8" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Session Pool Status -->
-        <TextView
-            android:id="@+id/poolStatusText"
-            android:layout_width="match_parent"
+        <!-- Kira Connect Button -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Session Pool: Initializing..."
-            android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:alpha="0.6"
+            android:layout_weight="1"
+            android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginTop="32dp" />
+            android:padding="16dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/kiraConnectButton"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/blue_card_background"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kira"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/kiraConnectionStatusText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap to connect"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/white"
+                        android:alpha="0.8"
+                        android:gravity="center" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Kira Pool Status -->
+            <TextView
+                android:id="@+id/kiraPoolStatusText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kira Pool: Initializing..."
+                android:textSize="12sp"
+                android:textColor="@android:color/white"
+                android:alpha="0.6"
+                android:gravity="center"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
+
+        <!-- Hugo Connect Button -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/hugoConnectButton"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/maya_card_background"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hugo"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/hugoConnectionStatusText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap to connect"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/white"
+                        android:alpha="0.8"
+                        android:gravity="center" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Hugo Pool Status -->
+            <TextView
+                android:id="@+id/hugoPoolStatusText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hugo Pool: Initializing..."
+                android:textSize="12sp"
+                android:textColor="@android:color/white"
+                android:alpha="0.6"
+                android:gravity="center"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
 
     </LinearLayout>
 

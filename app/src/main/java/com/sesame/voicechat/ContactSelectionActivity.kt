@@ -15,10 +15,18 @@ class ContactSelectionActivity : AppCompatActivity() {
     }
     
     private lateinit var greetingText: TextView
-    private lateinit var mayaConnectButton: CardView
-    private lateinit var connectionStatusText: TextView
-    private lateinit var poolStatusText: TextView
-    private lateinit var sessionManager: SessionManager
+    
+    // Kira UI components
+    private lateinit var kiraConnectButton: CardView
+    private lateinit var kiraConnectionStatusText: TextView
+    private lateinit var kiraPoolStatusText: TextView
+    
+    // Hugo UI components
+    private lateinit var hugoConnectButton: CardView
+    private lateinit var hugoConnectionStatusText: TextView
+    private lateinit var hugoPoolStatusText: TextView
+    
+    private lateinit var application: SesameApplication
     private var progressUpdateJob: Job? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,14 +37,22 @@ class ContactSelectionActivity : AppCompatActivity() {
         setupGreeting()
         setupClickListeners()
         setupSessionManager()
+        initializeSessionPoolsIfNeeded()
         startProgressTracking()
     }
     
     private fun initializeViews() {
         greetingText = findViewById(R.id.greetingText)
-        mayaConnectButton = findViewById(R.id.mayaConnectButton)
-        connectionStatusText = findViewById(R.id.connectionStatusText)
-        poolStatusText = findViewById(R.id.poolStatusText)
+        
+        // Kira UI components
+        kiraConnectButton = findViewById(R.id.kiraConnectButton)
+        kiraConnectionStatusText = findViewById(R.id.kiraConnectionStatusText)
+        kiraPoolStatusText = findViewById(R.id.kiraPoolStatusText)
+        
+        // Hugo UI components
+        hugoConnectButton = findViewById(R.id.hugoConnectButton)
+        hugoConnectionStatusText = findViewById(R.id.hugoConnectionStatusText)
+        hugoPoolStatusText = findViewById(R.id.hugoPoolStatusText)
     }
     
     private fun setupGreeting() {
@@ -51,13 +67,41 @@ class ContactSelectionActivity : AppCompatActivity() {
     }
     
     private fun setupClickListeners() {
-        mayaConnectButton.setOnClickListener {
-            startVoiceChat("Maya")
+        kiraConnectButton.setOnClickListener {
+            startVoiceChat("Kira")
+        }
+        
+        hugoConnectButton.setOnClickListener {
+            startVoiceChat("Hugo")
         }
     }
     
     private fun setupSessionManager() {
-        sessionManager = (application as SesameApplication).sessionManager
+        application = getApplication() as SesameApplication
+    }
+    
+    private fun initializeSessionPoolsIfNeeded() {
+        // Check if session pools are already running
+        val availableContacts = application.getAvailableContacts()
+        if (availableContacts.isNotEmpty()) {
+            return // Already initialized
+        }
+        
+        // Check if we have a saved configuration
+        if (!application.hasConfiguration()) {
+            // No configuration - redirect to configuration screen
+            val intent = Intent(this, ConfigurationActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
+        
+        // We have configuration but no running session pools - initialize them
+        val configPrefs = ConfigurationPreferences(this)
+        val config = configPrefs.getConfiguration()
+        if (config != null) {
+            application.initializeWithConfiguration(config)
+        }
     }
     
     private fun startProgressTracking() {
@@ -74,31 +118,69 @@ class ContactSelectionActivity : AppCompatActivity() {
     }
     
     private fun updateSessionProgress() {
-        // Get session progress info
-        val progressInfo = sessionManager.getSessionProgress()
-        val poolStatus = sessionManager.getPoolStatus()
+        val availableContacts = application.getAvailableContacts()
         
-        // Update connection status based on best session
-        val connectionStatus = if (progressInfo != null) {
-            val (progress, isComplete) = progressInfo
-            val progressPercent = (progress * 100).toInt()
-            when {
-                isComplete -> "Ready to connect!"
-                progressPercent > 0 -> "Preparing... ${progressPercent}%"
-                else -> "Getting ready..."
-            }
+        // Update Kira status if available
+        if ("Kira" in availableContacts) {
+            updateContactProgress("Kira", kiraConnectionStatusText, kiraPoolStatusText)
         } else {
-            "Initializing sessions..."
+            kiraConnectionStatusText.text = "No tokens available"
+            kiraPoolStatusText.text = "Kira: Not configured"
+            kiraConnectButton.alpha = 0.5f
+            kiraConnectButton.isClickable = false
         }
-        connectionStatusText.text = connectionStatus
         
-        // Update pool status
-        poolStatusText.text = poolStatus
+        // Update Hugo status if available
+        if ("Hugo" in availableContacts) {
+            updateContactProgress("Hugo", hugoConnectionStatusText, hugoPoolStatusText)
+        } else {
+            hugoConnectionStatusText.text = "No tokens available"
+            hugoPoolStatusText.text = "Hugo: Not configured"
+            hugoConnectButton.alpha = 0.5f
+            hugoConnectButton.isClickable = false
+        }
     }
     
-    private fun startVoiceChat(character: String) {
+    private fun updateContactProgress(contactName: String, statusText: TextView, poolText: TextView) {
+        try {
+            val sessionManager = application.getSessionManagerForContact(contactName)
+            
+            // Get session progress info
+            val progressInfo = sessionManager.getSessionProgress()
+            val poolStatus = sessionManager.getPoolStatus()
+            
+            // Update connection status based on best session
+            val connectionStatus = if (progressInfo != null) {
+                val (progress, isComplete) = progressInfo
+                val progressPercent = (progress * 100).toInt()
+                when {
+                    isComplete -> "Ready to connect!"
+                    progressPercent > 0 -> "Preparing... ${progressPercent}%"
+                    else -> "Getting ready..."
+                }
+            } else {
+                "Initializing sessions..."
+            }
+            statusText.text = connectionStatus
+            
+            // Update pool status
+            poolText.text = poolStatus
+            
+        } catch (e: Exception) {
+            statusText.text = "Error loading status"
+            poolText.text = "$contactName: Error"
+        }
+    }
+    
+    private fun startVoiceChat(contactName: String) {
+        // Verify contact is available before starting
+        val availableContacts = application.getAvailableContacts()
+        if (contactName !in availableContacts) {
+            return // Contact not available, button should be disabled
+        }
+        
         val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("CONTACT_NAME", character)
+            putExtra("CONTACT_NAME", contactName)
         }
         startActivity(intent)
         

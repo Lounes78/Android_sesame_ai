@@ -64,4 +64,8 @@
     <color name="gradient_start_teal">#FF4DB6AC</color>
     <color name="gradient_middle_aqua">#FF00BCD4</color>
     <color name="gradient_end_light_blue">#FF81D4FA</color>
+    
+    <!-- Configuration screen colors -->
+    <color name="background_dark">#FF1A1A1A</color>
+    <color name="accent_blue">#FF2196F3</color>
 </resources>

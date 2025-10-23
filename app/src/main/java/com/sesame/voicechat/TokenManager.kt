@@ -9,21 +9,21 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
-class TokenManager(private val context: Context) {
+class TokenManager(private val context: Context, private val contactName: String = "default") {
     
     companion object {
         private const val TAG = "TokenManager"
-        private const val PREFS_NAME = "sesame_tokens"
-        private const val PREF_ID_TOKEN = "id_token"
-        private const val PREF_REFRESH_TOKEN = "refresh_token"
-        private const val PREF_TOKEN_EXPIRY = "token_expiry"
-        
-        // Firebase API configuration
         private const val FIREBASE_API_KEY = "AIzaSyDtC7Uwb5pGAsdmrH2T4Gqdk5Mga07jYPM"
         private const val REFRESH_TOKEN_URL = "https://securetoken.googleapis.com/v1/token"
     }
     
-    private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    // Contact-specific preference names to avoid conflicts
+    private val prefsName = "sesame_tokens_${contactName.lowercase()}"
+    private val prefIdToken = "id_token_${contactName.lowercase()}"
+    private val prefRefreshToken = "refresh_token_${contactName.lowercase()}"
+    private val prefTokenExpiry = "token_expiry_${contactName.lowercase()}"
+        
+    private val prefs = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
     
     /**
      * Get a valid ID token, automatically refreshing if needed
@@ -31,27 +31,27 @@ class TokenManager(private val context: Context) {
     suspend fun getValidIdToken(): String? = withContext(Dispatchers.IO) {
         try {
             // Check if current token is still valid
-            val currentToken = prefs.getString(PREF_ID_TOKEN, null)
-            val tokenExpiry = prefs.getLong(PREF_TOKEN_EXPIRY, 0)
+            val currentToken = prefs.getString(prefIdToken, null)
+            val tokenExpiry = prefs.getLong(prefTokenExpiry, 0)
             
             if (currentToken != null && System.currentTimeMillis() < tokenExpiry - 60000) { // 1 min buffer
-                Log.d(TAG, "✅ Using existing valid token")
+                Log.d(TAG, "✅ [$contactName] Using existing valid token")
                 return@withContext currentToken
             }
             
             // Token expired or missing, try to refresh
-            Log.i(TAG, "🔄 Token expired or missing, attempting refresh...")
-            val refreshToken = prefs.getString(PREF_REFRESH_TOKEN, null)
+            Log.i(TAG, "🔄 [$contactName] Token expired or missing, attempting refresh...")
+            val refreshToken = prefs.getString(prefRefreshToken, null)
             
             if (refreshToken != null) {
                 val newToken = refreshIdToken(refreshToken)
                 if (newToken != null) {
-                    Log.i(TAG, "✅ Token refreshed successfully")
+                    Log.i(TAG, "✅ [$contactName] Token refreshed successfully")
                     return@withContext newToken
                 }
             }
             
-            Log.e(TAG, "❌ Failed to get valid token - user needs to re-authenticate")
+            Log.e(TAG, "❌ [$contactName] Failed to get valid token - user needs to re-authenticate")
             return@withContext null
             
         } catch (e: Exception) {
@@ -69,13 +69,13 @@ class TokenManager(private val context: Context) {
             val tokenExpiry = parseJwtExpiry(idToken)
             
             prefs.edit().apply {
-                putString(PREF_ID_TOKEN, idToken)
-                putString(PREF_REFRESH_TOKEN, refreshToken)
-                putLong(PREF_TOKEN_EXPIRY, tokenExpiry)
+                putString(prefIdToken, idToken)
+                putString(prefRefreshToken, refreshToken)
+                putLong(prefTokenExpiry, tokenExpiry)
                 apply()
             }
             
-            Log.i(TAG, "🔐 Tokens stored successfully. Expires: ${Date(tokenExpiry)}")
+            Log.i(TAG, "🔐 [$contactName] Tokens stored successfully. Expires: ${Date(tokenExpiry)}")
         } catch (e: Exception) {
             Log.e(TAG, "Error storing tokens", e)
         }
@@ -161,8 +161,8 @@ class TokenManager(private val context: Context) {
      * Check if we have stored tokens
      */
     fun hasStoredTokens(): Boolean {
-        return prefs.getString(PREF_ID_TOKEN, null) != null && 
-               prefs.getString(PREF_REFRESH_TOKEN, null) != null
+        return prefs.getString(prefIdToken, null) != null &&
+               prefs.getString(prefRefreshToken, null) != null
     }
     
     /**
@@ -170,19 +170,19 @@ class TokenManager(private val context: Context) {
      */
     fun clearTokens() {
         prefs.edit().clear().apply()
-        Log.i(TAG, "🗑️ All tokens cleared")
+        Log.i(TAG, "🗑️ [$contactName] All tokens cleared")
     }
     
     /**
      * Get current token info for debugging
      */
     fun getTokenInfo(): String {
-        val idToken = prefs.getString(PREF_ID_TOKEN, null)
-        val refreshToken = prefs.getString(PREF_REFRESH_TOKEN, null)
-        val expiry = prefs.getLong(PREF_TOKEN_EXPIRY, 0)
+        val idToken = prefs.getString(prefIdToken, null)
+        val refreshToken = prefs.getString(prefRefreshToken, null)
+        val expiry = prefs.getLong(prefTokenExpiry, 0)
         
         return buildString {
-            appendLine("Token Status:")
+            appendLine("[$contactName] Token Status:")
             appendLine("• ID Token: ${if (idToken != null) "Present" else "Missing"}")
             appendLine("• Refresh Token: ${if (refreshToken != null) "Present" else "Missing"}")
             appendLine("• Expires: ${if (expiry > 0) Date(expiry) else "Unknown"}")

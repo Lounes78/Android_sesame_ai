@@ -57,9 +57,9 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true" >
 
-        <!-- Contact Selection Screen (Launcher) -->
+        <!-- Configuration Screen (Launcher) -->
         <activity
-            android:name="com.sesame.voicechat.ContactSelectionActivity"
+            android:name="com.sesame.voicechat.ConfigurationActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="unspecified"
@@ -75,6 +75,22 @@
                 <action android:name="android.car.intent.action.CAR_APP" />
             </intent-filter>
 
+            <meta-data
+                android:name="distractionOptimized"
+                android:value="true" />
+        </activity>
+
+        <!-- Contact Selection Screen -->
+        <activity
+            android:name="com.sesame.voicechat.ContactSelectionActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:parentActivityName="com.sesame.voicechat.ConfigurationActivity"
+            android:screenOrientation="unspecified"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ConfigurationActivity" />
             <meta-data
                 android:name="distractionOptimized"
                 android:value="true" />

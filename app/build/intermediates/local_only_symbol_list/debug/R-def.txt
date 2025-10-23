@@ -1,8 +1,10 @@
 R_DEF: Internal format may change without notice
 local
+color accent_blue
 color aqua
 color background
 color background_card
+color background_dark
 color background_light
 color bubble_in
 color bubble_out
@@ -85,13 +87,16 @@ id characterName
 id characterRadioGroup
 id connectButton
 id connectionStatus
-id connectionStatusText
 id controlsSection
 id divider
 id edtMessage
 id endCallButton
 id greetingText
 id headerSection
+id hugoConnectButton
+id hugoConnectionStatusText
+id hugoPoolStatusText
+id hugo_checkbox
 id incomingLayout
 id initializationMessage
 id initializationOverlay
@@ -100,13 +105,17 @@ id initializationProgressText
 id initializationSpinner
 id initializationTitle
 id instructionText
+id kiraConnectButton
+id kiraConnectionStatusText
+id kiraPoolStatusText
+id kira_checkbox
 id layoutTTSOptions
-id mayaConnectButton
 id messageLayout
 id muteButton
 id muteIcon
 id outgoingLayout
-id poolStatusText
+id pool_size_label
+id pool_size_seekbar
 id pulseBackground
 id radioF5
 id radioFish
@@ -115,6 +124,7 @@ id radioMaya
 id radioMiles
 id recyclerMessages
 id recyclerSenders
+id start_button
 id statusText
 id toolbarSender
 id tvAudioStatus
@@ -131,6 +141,7 @@ id tvTimeOut
 id tvUnreadCount
 id voiceActivityIndicator
 layout activity_call
+layout activity_configuration
 layout activity_contact_selection
 layout activity_main
 layout fragment_sender_detail

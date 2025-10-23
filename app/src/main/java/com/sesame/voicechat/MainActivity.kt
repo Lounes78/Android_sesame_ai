@@ -71,7 +71,8 @@ class MainActivity : AppCompatActivity() {
     
     // State
     private var isConnected = false
-    private var selectedCharacter = "Miles"
+    private var selectedCharacter = "Kira" // Default fallback
+    private var selectedContactName = "Kira" // The actual contact name from intent
     private var selectedAudioRoute = AudioRoute.AUTO
     private var currentSession: SessionManager.SessionState? = null
     
@@ -88,8 +89,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_call)
         
-        // Get character from intent - force Maya for now since session pool only supports Maya
-        selectedCharacter = "Maya"
+        // Get contact name from intent
+        selectedContactName = intent.getStringExtra("CONTACT_NAME") ?: "Kira"
+        selectedCharacter = selectedContactName // Use contact name as character name
         
         initializeViews()
         setupAudioSystem()
@@ -161,9 +163,17 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun setupSessionManager() {
-        sessionManager = SessionManager.getInstance(this)
-        sessionManager.initialize(tokenManager)
-        Log.i(TAG, "🏊 SessionManager initialized")
+        try {
+            val application = getApplication() as SesameApplication
+            sessionManager = application.getSessionManagerForContact(selectedContactName)
+            Log.i(TAG, "🏊 [$selectedContactName] SessionManager initialized")
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ Failed to get SessionManager for $selectedContactName", e)
+            // Fallback to default contact if specific contact fails
+            val application = getApplication() as SesameApplication
+            sessionManager = application.sessionManager // Uses default Kira
+            Log.w(TAG, "⚠️ Using fallback SessionManager")
+        }
     }
     
     // Audio route spinner removed for new UI design
@@ -271,20 +281,19 @@ class MainActivity : AppCompatActivity() {
         // Use coroutine to get session from pool
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                // Get the best available Maya session from pool
-                val sessionState = sessionManager.getBestAvailableSession("Maya")
+                // Get the best available session for this contact from pool
+                val sessionState = sessionManager.getBestAvailableSession(selectedContactName)
                 
                 if (sessionState == null) {
-                    onWebSocketError("No available Maya sessions in pool. Please wait and try again.")
+                    onWebSocketError("No available $selectedContactName sessions in pool. Please wait and try again.")
                     return@launch
                 }
                 
                 currentSession = sessionState
                 sesameWebSocket = sessionState.webSocket
                 
-                // Character is always Maya for now
-                selectedCharacter = "Maya"
-                characterName.text = selectedCharacter
+                // Set character name
+                characterName.text = selectedContactName
                 
                 val status = if (sessionState.isPromptComplete) {
                     "Session ready! Starting immediately..."
@@ -309,7 +318,7 @@ class MainActivity : AppCompatActivity() {
                 // Immediately proceed to connected state
                 onWebSocketConnected()
                 
-                Log.d(TAG, "🎯 Using pre-warmed session: $selectedCharacter (${if (sessionState.isPromptComplete) "ready" else "${(sessionState.promptProgress * 100).toInt()}% complete"})")
+                Log.d(TAG, "🎯 [$selectedContactName] Using pre-warmed session: $selectedContactName (${if (sessionState.isPromptComplete) "ready" else "${(sessionState.promptProgress * 100).toInt()}% complete"})")
                 
             } catch (e: Exception) {
                 Log.e(TAG, "Connection error", e)

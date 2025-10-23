@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/background_dark">
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Session Pool Configuration"
+        android:textSize="28sp"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Pool Size Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/blue_card_background"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pool Size Per Contact"
+            android:textSize="20sp"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/pool_size_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pool Size: 8 per contact (Total: 16 sessions)"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="16dp" />
+
+        <SeekBar
+            android:id="@+id/pool_size_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:min="2"
+            android:max="12"
+            android:progress="8"
+            android:progressTint="@android:color/black"
+            android:thumbTint="@android:color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="2"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="12"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:gravity="end" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Contact Selection Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/maya_card_background"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Active Contacts"
+            android:textSize="20sp"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <CheckBox
+            android:id="@+id/kira_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kira (Maya Backend)"
+            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:checked="true"
+            android:buttonTint="@color/accent_blue"
+            android:padding="8dp" />
+
+        <CheckBox
+            android:id="@+id/hugo_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hugo (Maya Backend)"
+            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:checked="true"
+            android:buttonTint="@color/accent_blue"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+    <!-- Start Button -->
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="START SESSION POOLS"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:background="@drawable/contact_selector"
+        android:layout_marginTop="32dp"
+        android:elevation="4dp" />
+
+</LinearLayout>

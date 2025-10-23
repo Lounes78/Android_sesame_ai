@@ -1352,6 +1352,7 @@ color abc_tint_edittext
 color abc_tint_seek_thumb
 color abc_tint_spinner
 color abc_tint_switch_track
+color accent_blue
 color accent_material_dark
 color accent_material_light
 color action_button
@@ -1360,6 +1361,7 @@ color androidx_core_secondary_text_default_material_light
 color aqua
 color background
 color background_card
+color background_dark
 color background_floating_material_dark
 color background_floating_material_light
 color background_light
@@ -3314,7 +3316,6 @@ id compress
 id confirm_button
 id connectButton
 id connectionStatus
-id connectionStatusText
 id constraint
 id container
 id content
@@ -3416,6 +3417,10 @@ id home
 id homeAsUp
 id honorRequest
 id horizontal_only
+id hugoConnectButton
+id hugoConnectionStatusText
+id hugoPoolStatusText
+id hugo_checkbox
 id icon
 id icon_group
 id ifRoom
@@ -3440,6 +3445,10 @@ id italic
 id item_touch_helper_previous_elevation
 id jumpToEnd
 id jumpToStart
+id kiraConnectButton
+id kiraConnectionStatusText
+id kiraPoolStatusText
+id kira_checkbox
 id labeled
 id layout
 id layoutTTSOptions
@@ -3479,7 +3488,6 @@ id material_timepicker_ok_button
 id material_timepicker_view
 id material_value_index
 id matrix
-id mayaConnectButton
 id media_actions
 id media_controller_compat_view_tag
 id message
@@ -3572,7 +3580,8 @@ id pathRelative
 id peekHeight
 id percent
 id pin
-id poolStatusText
+id pool_size_label
+id pool_size_seekbar
 id position
 id postLayout
 id pressed
@@ -3651,6 +3660,7 @@ id start
 id startHorizontal
 id startToEnd
 id startVertical
+id start_button
 id staticLayout
 id staticPostLayout
 id statusText
@@ -3865,6 +3875,7 @@ layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_call
+layout activity_configuration
 layout activity_contact_selection
 layout activity_main
 layout activity_template
