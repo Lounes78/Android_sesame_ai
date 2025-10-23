@@ -142,14 +142,14 @@ class MainActivity : AppCompatActivity() {
         
         // Store initial tokens if not already stored
         if (!tokenManager.hasStoredTokens()) {
-            Log.i(TAG, "🔐 Loading tokens from secure configuration...")
+            Log.i(TAG, "Loading tokens from secure configuration...")
             
             val tokenPair = TokenConfig.loadTokens(this)
             if (tokenPair != null) {
-                Log.i(TAG, "✅ Storing tokens from configuration file...")
+                Log.i(TAG, "Storing tokens from configuration file...")
                 tokenManager.storeTokens(tokenPair.idToken, tokenPair.refreshToken)
             } else {
-                Log.e(TAG, "❌ Failed to load tokens from configuration - app may not function properly")
+                Log.e(TAG, "Failed to load tokens from configuration - app may not function properly")
                 Toast.makeText(this, "Configuration error: Unable to load authentication tokens", Toast.LENGTH_LONG).show()
                 return
             }
@@ -166,13 +166,13 @@ class MainActivity : AppCompatActivity() {
         try {
             val application = getApplication() as SesameApplication
             sessionManager = application.getSessionManagerForContact(selectedContactName)
-            Log.i(TAG, "🏊 [$selectedContactName] SessionManager initialized")
+            Log.i(TAG, "[$selectedContactName] SessionManager initialized")
         } catch (e: Exception) {
-            Log.e(TAG, "❌ Failed to get SessionManager for $selectedContactName", e)
+            Log.e(TAG, "Failed to get SessionManager for $selectedContactName", e)
             // Fallback to default contact if specific contact fails
             val application = getApplication() as SesameApplication
             sessionManager = application.sessionManager // Uses default Kira
-            Log.w(TAG, "⚠️ Using fallback SessionManager")
+            Log.w(TAG, "Using fallback SessionManager")
         }
     }
     
@@ -318,7 +318,7 @@ class MainActivity : AppCompatActivity() {
                 // Immediately proceed to connected state
                 onWebSocketConnected()
                 
-                Log.d(TAG, "🎯 [$selectedContactName] Using pre-warmed session: $selectedContactName (${if (sessionState.isPromptComplete) "ready" else "${(sessionState.promptProgress * 100).toInt()}% complete"})")
+                Log.d(TAG, "[$selectedContactName] Using pre-warmed session: $selectedContactName (${if (sessionState.isPromptComplete) "ready" else "${(sessionState.promptProgress * 100).toInt()}% complete"})")
                 
             } catch (e: Exception) {
                 Log.e(TAG, "Connection error", e)
@@ -353,7 +353,7 @@ class MainActivity : AppCompatActivity() {
         updateConnectionStatus("Disconnected", R.color.error_red)
         stopCallTimer()
         
-        Log.i(TAG, "📱 Local disconnect complete - background sessions unaffected")
+        Log.i(TAG, "Local disconnect complete - background sessions unaffected")
     }
     
     private fun onWebSocketConnected() {
@@ -365,13 +365,13 @@ class MainActivity : AppCompatActivity() {
             // Check if session prompt is complete
             currentSession?.let { session ->
                 if (session.isPromptComplete) {
-                    Log.i(TAG, "✅ Session prompt already complete - ready for immediate chat!")
+                    Log.i(TAG, "Session prompt already complete - ready for immediate chat!")
                     Toast.makeText(this, "Connected instantly! Session was pre-warmed.", Toast.LENGTH_SHORT).show()
                     
                     setupAudio()
                     startCallTimer()
                 } else {
-                    Log.i(TAG, "⏳ Session prompt ${(session.promptProgress * 100).toInt()}% complete - showing progress")
+                    Log.i(TAG, "Session prompt ${(session.promptProgress * 100).toInt()}% complete - showing progress")
                     Toast.makeText(this, "Connected! Session finishing initialization...", Toast.LENGTH_SHORT).show()
                     
                     // Show initialization overlay and track progress
@@ -405,7 +405,7 @@ class MainActivity : AppCompatActivity() {
                             
                             // NOW start AudioPlayer - session is complete
                             audioPlayer?.startPlayback()
-                            Log.i(TAG, "🔊 AudioPlayer started - session complete, AI responses now enabled")
+                            Log.i(TAG, "AudioPlayer started - session complete, AI responses now enabled")
                             
                             delay(1000)
                             hideInitializationOverlay()
@@ -491,14 +491,14 @@ class MainActivity : AppCompatActivity() {
             currentSession?.let { session ->
                 if (session.isPromptComplete) {
                     audioPlayer?.startPlayback()
-                    Log.i(TAG, "🔊 AudioPlayer started - AI responses enabled (session complete)")
+                    Log.i(TAG, "AudioPlayer started - AI responses enabled (session complete)")
                 } else {
-                    Log.i(TAG, "🔇 AudioPlayer created but not started - waiting for session to complete")
+                    Log.i(TAG, "AudioPlayer created but not started - waiting for session to complete")
                 }
             } ?: run {
                 // Fallback - start immediately if no session info
                 audioPlayer?.startPlayback()
-                Log.i(TAG, "🔊 AudioPlayer started - AI responses enabled (fallback)")
+                Log.i(TAG, "AudioPlayer started - AI responses enabled (fallback)")
             }
             
             // Initialize audio manager with car optimizations
@@ -526,7 +526,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 onErrorCallback = { error ->
-                    Log.e(TAG, "🎤 Audio recording error: $error")
+                    Log.e(TAG, "Audio recording error: $error")
                     runOnUiThread {
                         Toast.makeText(this@MainActivity, "Recording error: $error", Toast.LENGTH_SHORT).show()
                     }
@@ -755,7 +755,7 @@ class MainActivity : AppCompatActivity() {
         // Don't shutdown SessionManager when just finishing the call activity
         // SessionManager should keep running in the background for the entire app lifecycle
         // It will be managed by the Application class
-        Log.i(TAG, "📱 MainActivity destroyed - audio routing reset, SessionManager continues running")
+        Log.i(TAG, "MainActivity destroyed - audio routing reset, SessionManager continues running")
     }
     
     override fun onPause() {
@@ -789,12 +789,12 @@ class MainActivity : AppCompatActivity() {
     // Pre-recorded audio is now handled by SessionManager in background
     // This function is no longer needed but kept for potential future use
     private fun sendPreRecordedAudio() {
-        Log.i(TAG, "📢 Pre-recorded audio already sent by session pool - skipping")
+        Log.i(TAG, "Pre-recorded audio already sent by session pool - skipping")
         // Session pool has already handled the pre-recorded audio
         // Just log that we're using a pre-warmed session
         currentSession?.let { session ->
             val status = if (session.isPromptComplete) "complete" else "${(session.promptProgress * 100).toInt()}%"
-            Log.i(TAG, "✅ Using pre-warmed session - prompt $status")
+            Log.i(TAG, "Using pre-warmed session - prompt $status")
         }
     }
     

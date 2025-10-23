@@ -58,7 +58,7 @@ class AudioManager {
                 MediaRecorder.AudioSource.MIC
             }
             
-            Log.i(TAG, "🎤 Using audio source: $audioSource")
+            Log.i(TAG, "Using audio source: $audioSource")
             
             audioRecord = AudioRecord(
                 audioSource,
@@ -84,7 +84,7 @@ class AudioManager {
             
             startRecordingThread(bufferSize)
             
-            Log.i(TAG, "★ AUDIO RECORDING STARTED ★")
+            Log.i(TAG, "AUDIO RECORDING STARTED")
             Log.i(TAG, "Settings: chunk_size=$chunkSize, buffer_size=$bufferSize, threshold=$amplitudeThreshold")
             true
         } catch (e: Exception) {
@@ -124,7 +124,7 @@ class AudioManager {
                         if (chunksProcessed % 100 == 0) {
                             val state = audioRecord?.state
                             val recordingState = audioRecord?.recordingState
-                            Log.i(TAG, "🎤 AudioRecord State: $state, Recording: $recordingState")
+                            Log.i(TAG, "AudioRecord State: $state, Recording: $recordingState")
                         }
                         
                         // Voice activity detection
@@ -132,7 +132,7 @@ class AudioManager {
                             // In debug mode, still run detection but force voice result
                             detectVoiceActivity(buffer, bytesRead) // Run detection for logging
                             if (chunksProcessed % 100 == 0) {
-                                Log.i(TAG, "🐛 DEBUG MODE: Forcing voice detection (chunk $chunksProcessed)")
+                                Log.i(TAG, "DEBUG MODE: Forcing voice detection (chunk $chunksProcessed)")
                             }
                             true
                         } else {
@@ -152,7 +152,7 @@ class AudioManager {
                         // Log stats periodically
                         monitorCapturePerformance()
                     } else {
-                        Log.e(TAG, "❌ AudioRecord.read() returned $bytesRead - microphone failure!")
+                        Log.e(TAG, "AudioRecord.read() returned $bytesRead - microphone failure!")
                     }
                     
                 } catch (e: Exception) {
@@ -190,7 +190,7 @@ class AudioManager {
         }
         
         if (sampleCount == 0) {
-            Log.w(TAG, "❌ No audio samples in buffer!")
+            Log.w(TAG, "No audio samples in buffer!")
             return false
         }
         
@@ -199,7 +199,7 @@ class AudioManager {
         
         // Reduced logging for better performance - only log occasionally for monitoring
         if (chunksProcessed % 200 == 0) { // Every ~30 seconds instead of every 1.4 seconds
-            Log.d(TAG, "🎤 Audio levels: RMS=${rms.toInt()}, Threshold=${amplitudeThreshold.toInt()}")
+            Log.d(TAG, "Audio levels: RMS=${rms.toInt()}, Threshold=${amplitudeThreshold.toInt()}")
         }
         
         return if (rms > amplitudeThreshold) {
@@ -207,7 +207,7 @@ class AudioManager {
             silenceCounter = 0
             // Only log voice detection occasionally to reduce overhead
             if (silenceCounter == 0) { // Only log when transitioning from silence to voice
-                Log.d(TAG, "🗣️ Voice detected: RMS ${rms.toInt()}")
+                Log.d(TAG, "Voice detected: RMS ${rms.toInt()}")
             }
             true
         } else {
@@ -239,7 +239,7 @@ class AudioManager {
         val chunksPerSec = if (timeElapsed > 0) chunksProcessed / timeElapsed else 0.0
         
         val debugInfo = if (debugMode) " [DEBUG MODE]" else ""
-        Log.i(TAG, "🎤 Capture: ${chunksPerSec.toInt()} chunks/s, ${delaysPerSec.toInt()} delays/s, $captureErrors errors$debugInfo")
+        Log.i(TAG, "Capture: ${chunksPerSec.toInt()} chunks/s, ${delaysPerSec.toInt()} delays/s, $captureErrors errors$debugInfo")
         
         // Reset counters
         processingDelayCount = 0
@@ -268,18 +268,18 @@ class AudioManager {
             // Car-optimized settings - VERY sensitive for car voice pickup
             chunkSize = 2048  // Larger chunks for car systems
             amplitudeThreshold = 150.0  // Very sensitive - picks up quiet speech
-            Log.i(TAG, "🚗 CAR MODE: chunk_size=$chunkSize, threshold=$amplitudeThreshold (HIGHLY SENSITIVE)")
+            Log.i(TAG, "CAR MODE: chunk_size=$chunkSize, threshold=$amplitudeThreshold (HIGHLY SENSITIVE)")
         } else {
             // Phone-optimized settings
             chunkSize = 1024  // Standard chunk size
             amplitudeThreshold = 100.0  // Very sensitive for phone use
-            Log.i(TAG, "📱 PHONE MODE: chunk_size=$chunkSize, threshold=$amplitudeThreshold (HIGHLY SENSITIVE)")
+            Log.i(TAG, "PHONE MODE: chunk_size=$chunkSize, threshold=$amplitudeThreshold (HIGHLY SENSITIVE)")
         }
     }
     
     // Control debug mode for troubleshooting
     fun setDebugMode(enabled: Boolean) {
         debugMode = enabled
-        Log.i(TAG, if (enabled) "🐛 DEBUG MODE ENABLED - Forcing voice detection" else "🐛 DEBUG MODE DISABLED - Using normal voice detection")
+        Log.i(TAG, if (enabled) "DEBUG MODE ENABLED - Forcing voice detection" else "DEBUG MODE DISABLED - Using normal voice detection")
     }
 }

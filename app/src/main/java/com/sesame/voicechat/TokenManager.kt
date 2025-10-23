@@ -35,23 +35,23 @@ class TokenManager(private val context: Context, private val contactName: String
             val tokenExpiry = prefs.getLong(prefTokenExpiry, 0)
             
             if (currentToken != null && System.currentTimeMillis() < tokenExpiry - 60000) { // 1 min buffer
-                Log.d(TAG, "✅ [$contactName] Using existing valid token")
+                Log.d(TAG, "[$contactName] Using existing valid token")
                 return@withContext currentToken
             }
             
             // Token expired or missing, try to refresh
-            Log.i(TAG, "🔄 [$contactName] Token expired or missing, attempting refresh...")
+            Log.i(TAG, "[$contactName] Token expired or missing, attempting refresh...")
             val refreshToken = prefs.getString(prefRefreshToken, null)
             
             if (refreshToken != null) {
                 val newToken = refreshIdToken(refreshToken)
                 if (newToken != null) {
-                    Log.i(TAG, "✅ [$contactName] Token refreshed successfully")
+                    Log.i(TAG, "[$contactName] Token refreshed successfully")
                     return@withContext newToken
                 }
             }
             
-            Log.e(TAG, "❌ [$contactName] Failed to get valid token - user needs to re-authenticate")
+            Log.e(TAG, "[$contactName] Failed to get valid token - user needs to re-authenticate")
             return@withContext null
             
         } catch (e: Exception) {
@@ -75,7 +75,7 @@ class TokenManager(private val context: Context, private val contactName: String
                 apply()
             }
             
-            Log.i(TAG, "🔐 [$contactName] Tokens stored successfully. Expires: ${Date(tokenExpiry)}")
+            Log.i(TAG, "[$contactName] Tokens stored successfully. Expires: ${Date(tokenExpiry)}")
         } catch (e: Exception) {
             Log.e(TAG, "Error storing tokens", e)
         }
@@ -124,12 +124,12 @@ class TokenManager(private val context: Context, private val contactName: String
                 return@withContext newIdToken
             } else {
                 val errorResponse = connection.errorStream?.bufferedReader()?.use { it.readText() }
-                Log.e(TAG, "❌ Token refresh failed: $responseCode - $errorResponse")
+                Log.e(TAG, "Token refresh failed: $responseCode - $errorResponse")
                 return@withContext null
             }
             
         } catch (e: Exception) {
-            Log.e(TAG, "❌ Network error during token refresh", e)
+            Log.e(TAG, "Network error during token refresh", e)
             return@withContext null
         }
     }
@@ -170,7 +170,7 @@ class TokenManager(private val context: Context, private val contactName: String
      */
     fun clearTokens() {
         prefs.edit().clear().apply()
-        Log.i(TAG, "🗑️ [$contactName] All tokens cleared")
+        Log.i(TAG, "[$contactName] All tokens cleared")
     }
     
     /**

@@ -19,28 +19,28 @@ class SesameApplication : Application() {
     
     override fun onCreate() {
         super.onCreate()
-        Log.i(TAG, "🚀 SesameApplication starting")
+        Log.i(TAG, "SesameApplication starting")
         
         configPrefs = ConfigurationPreferences(this)
         
         // Check if configuration exists - if not, defer initialization
         val config = configPrefs.getConfiguration()
         if (config == null) {
-            Log.i(TAG, "⏸️ No configuration found - session pools will initialize after configuration")
+            Log.i(TAG, "No configuration found - session pools will initialize after configuration")
             return
         }
         
-        Log.i(TAG, "⚙️ Found configuration: $config")
+        Log.i(TAG, "Found configuration: $config")
         initializeWithConfiguration(config)
     }
     
     fun initializeWithConfiguration(config: SessionConfiguration) {
-        Log.i(TAG, "🏊 Initializing session pools with configuration: $config")
+        Log.i(TAG, "Initializing session pools with configuration: $config")
         
         // Load all available contact tokens
         val allTokens = TokenConfig.loadAllContactTokens(this)
         if (allTokens == null) {
-            Log.e(TAG, "❌ Failed to load any tokens from configuration")
+            Log.e(TAG, "Failed to load any tokens from configuration")
             return
         }
         
@@ -54,26 +54,26 @@ class SesameApplication : Application() {
         }
         
         if (contacts.isEmpty()) {
-            Log.w(TAG, "⚠️ No enabled contacts with valid tokens found")
+            Log.w(TAG, "No enabled contacts with valid tokens found")
             return
         }
         
-        Log.i(TAG, "🔐 Initializing session pools for: ${contacts.joinToString(", ")} with pool size ${config.poolSize}")
+        Log.i(TAG, "Initializing session pools for: ${contacts.joinToString(", ")} with pool size ${config.poolSize}")
         
         contacts.forEach { contactName ->
             initializeContactSessionPool(contactName, config.poolSize)
         }
         
-        Log.i(TAG, "✅ All session pools initialized - sessions will continue running for entire app lifecycle!")
+        Log.i(TAG, "All session pools initialized - sessions will continue running for entire app lifecycle!")
     }
     
     private fun initializeContactSessionPool(contactName: String, poolSize: Int) {
-        Log.i(TAG, "🌟 Initializing session pool for $contactName with pool size $poolSize")
+        Log.i(TAG, "Initializing session pool for $contactName with pool size $poolSize")
         
         // Get contact-specific tokens
         val contactTokens = TokenConfig.getTokensForContact(this, contactName)
         if (contactTokens == null) {
-            Log.e(TAG, "❌ No tokens found for $contactName")
+            Log.e(TAG, "No tokens found for $contactName")
             return
         }
         
@@ -81,7 +81,7 @@ class SesameApplication : Application() {
         val tokenManager = TokenManager(this, contactName).apply {
             // Store tokens for this contact if not already stored
             if (!hasStoredTokens()) {
-                Log.i(TAG, "🔐 [$contactName] Storing tokens from configuration...")
+                Log.i(TAG, "[$contactName] Storing tokens from configuration...")
                 storeTokens(contactTokens.idToken, contactTokens.refreshToken)
             }
         }
@@ -94,7 +94,7 @@ class SesameApplication : Application() {
         // Initialize the session pool
         sessionManager.initialize(tokenManager)
         
-        Log.i(TAG, "✅ [$contactName] Session pool initialization started with $poolSize sessions")
+        Log.i(TAG, "[$contactName] Session pool initialization started with $poolSize sessions")
     }
     
     fun getSessionManagerForContact(contactName: String): SessionManager {
@@ -111,7 +111,7 @@ class SesameApplication : Application() {
     }
     
     fun restartWithNewConfiguration(config: SessionConfiguration) {
-        Log.i(TAG, "🔄 Restarting with new configuration: $config")
+        Log.i(TAG, "Restarting with new configuration: $config")
         
         // Shutdown existing session pools
         sessionManagers.values.forEach { it.shutdown() }
@@ -124,7 +124,7 @@ class SesameApplication : Application() {
     
     override fun onTerminate() {
         super.onTerminate()
-        Log.i(TAG, "🛑 App terminating - shutting down all session pools")
+        Log.i(TAG, "App terminating - shutting down all session pools")
         sessionManagers.values.forEach { sessionManager ->
             sessionManager.shutdown()
         }
@@ -134,7 +134,7 @@ class SesameApplication : Application() {
     
     override fun onLowMemory() {
         super.onLowMemory()
-        Log.w(TAG, "⚠️ Low memory - but keeping all session pools running")
+        Log.w(TAG, "Low memory - but keeping all session pools running")
         // Don't shutdown sessions on low memory - they're critical for UX
     }
 }

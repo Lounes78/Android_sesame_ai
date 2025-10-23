@@ -46,18 +46,18 @@ object TokenConfig {
             } else null
             
             if (kiraTokens == null && hugoTokens == null) {
-                Log.e(TAG, "❌ No valid tokens found in $TOKENS_FILE")
+                Log.e(TAG, "No valid tokens found in $TOKENS_FILE")
                 return null
             }
             
-            Log.i(TAG, "✅ Successfully loaded tokens - Kira: ${kiraTokens != null}, Hugo: ${hugoTokens != null}")
+            Log.i(TAG, "Successfully loaded tokens - Kira: ${kiraTokens != null}, Hugo: ${hugoTokens != null}")
             ContactTokens(kiraTokens, hugoTokens)
             
         } catch (e: IOException) {
-            Log.e(TAG, "❌ Failed to load tokens from $TOKENS_FILE", e)
+            Log.e(TAG, "Failed to load tokens from $TOKENS_FILE", e)
             null
         } catch (e: Exception) {
-            Log.e(TAG, "❌ Error reading tokens", e)
+            Log.e(TAG, "Error reading tokens", e)
             null
         }
     }

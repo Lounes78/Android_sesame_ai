@@ -72,7 +72,7 @@ class SessionManager private constructor(
         this.audioFileProcessor = AudioFileProcessor(context)
         
         if (isRunning.compareAndSet(false, true)) {
-            Log.i(TAG, "🏊 [$contactName] Initializing session pool with $poolSize sessions")
+            Log.i(TAG, "[$contactName] Initializing session pool with $poolSize sessions")
             startPoolMaintenance()
         }
     }
@@ -90,10 +90,10 @@ class SessionManager private constructor(
                     val totalPlanned = currentSessions + pendingSessions
                     
                     if (totalPlanned < poolSize && !creationInProgress.get()) {
-                        Log.i(TAG, "🔄 [$contactName] Creating session to maintain pool (${currentSessions}+${pendingSessions}/${poolSize})")
+                        Log.i(TAG, "[$contactName] Creating session to maintain pool (${currentSessions}+${pendingSessions}/${poolSize})")
                         createSessionWithTimer()
                     } else if (totalPlanned > poolSize) {
-                        Log.w(TAG, "⚠️ [$contactName] Pool overshooting detected (${totalPlanned}/${poolSize}) - skipping creation")
+                        Log.w(TAG, "[$contactName] Pool overshooting detected (${totalPlanned}/${poolSize}) - skipping creation")
                     }
                     
                     // Check if we need to create buffer sessions for end-of-cycle gap
@@ -118,7 +118,7 @@ class SessionManager private constructor(
         // If we have sessions near completion and haven't created buffer yet
         if (nearCompletionSessions >= 3 && !cycleBufferCreated.get()) {
             val bufferSize = 2 // Create 2 buffer sessions to bridge the gap
-            Log.i(TAG, "🌉 [$contactName] Creating $bufferSize buffer sessions for end-of-cycle gap (${nearCompletionSessions} sessions at 75%+)")
+            Log.i(TAG, "[$contactName] Creating $bufferSize buffer sessions for end-of-cycle gap (${nearCompletionSessions} sessions at 75%+)")
             
             cycleBufferCreated.set(true)
             
@@ -135,7 +135,7 @@ class SessionManager private constructor(
         val completedSessions = sessionPool.count { it.isPromptComplete }
         val totalSessions = sessionPool.size
         if (completedSessions >= poolSize / 2 && cycleBufferCreated.get()) {
-            Log.d(TAG, "🔄 [$contactName] Cycle restarting - resetting buffer flag (${completedSessions}/${totalSessions} complete)")
+            Log.d(TAG, "[$contactName] Cycle restarting - resetting buffer flag (${completedSessions}/${totalSessions} complete)")
             cycleBufferCreated.set(false)
         }
     }
@@ -152,14 +152,14 @@ class SessionManager private constructor(
             
             val validToken = tokenManager.getValidIdToken()
             if (validToken == null) {
-                Log.e(TAG, "❌ [$contactName] Cannot create session: no valid token")
+                Log.e(TAG, "[$contactName] Cannot create session: no valid token")
                 return
             }
             
             val character = getBackendCharacter(contactName)
             val sessionIndex = sessionCounter.incrementAndGet()
             
-            Log.i(TAG, "⏱️ [$contactName] Starting session #${sessionIndex} - WebSocket in 2s, audio immediately after")
+            Log.i(TAG, "[$contactName] Starting session #${sessionIndex} - WebSocket in 2s, audio immediately after")
             
             // Wait 2 seconds before creating WebSocket with jitter to prevent thundering herd
             val jitter = (0..500).random()
@@ -168,7 +168,7 @@ class SessionManager private constructor(
             // Double-check we still need this session before creating
             val currentSessions = sessionPool.size
             if (currentSessions >= poolSize) {
-                Log.w(TAG, "⚠️ [$contactName] Pool full during creation (${currentSessions}/${poolSize}) - aborting session #${sessionIndex}")
+                Log.w(TAG, "[$contactName] Pool full during creation (${currentSessions}/${poolSize}) - aborting session #${sessionIndex}")
                 return
             }
             
@@ -176,16 +176,16 @@ class SessionManager private constructor(
                 try {
                 
                     // Create WebSocket
-                    Log.i(TAG, "🔌 [$contactName] Creating WebSocket for session #${sessionIndex} ($character)")
+                    Log.i(TAG, "[$contactName] Creating WebSocket for session #${sessionIndex} ($character)")
                     val webSocket = SesameWebSocket(validToken, character).apply {
                         onConnectCallback = {
-                            Log.d(TAG, "✅ [$contactName] Background session #${sessionIndex} connected for $character")
+                            Log.d(TAG, "[$contactName] Background session #${sessionIndex} connected for $character")
                         }
                         onDisconnectCallback = {
-                            Log.d(TAG, "❌ [$contactName] Background session #${sessionIndex} disconnected for $character")
+                            Log.d(TAG, "[$contactName] Background session #${sessionIndex} disconnected for $character")
                         }
                         onErrorCallback = { error ->
-                            Log.e(TAG, "❌ [$contactName] Background session #${sessionIndex} error for $character: $error")
+                            Log.e(TAG, "[$contactName] Background session #${sessionIndex} error for $character: $error")
                         }
                     }
                     
@@ -199,7 +199,7 @@ class SessionManager private constructor(
                         }
                         
                         if (webSocket.isConnected()) {
-                            Log.i(TAG, "✅ [$contactName] Session #${sessionIndex} connected after ${attempts * 100}ms")
+                            Log.i(TAG, "[$contactName] Session #${sessionIndex} connected after ${attempts * 100}ms")
                             
                             // Create and add session to pool immediately after connection
                             val sessionState = SessionState(
@@ -210,17 +210,17 @@ class SessionManager private constructor(
                             )
                             
                             sessionPool.offer(sessionState)
-                            Log.i(TAG, "➕ [$contactName] Added session #${sessionIndex} for $character to pool (${sessionPool.size}/$poolSize)")
+                            Log.i(TAG, "[$contactName] Added session #${sessionIndex} for $character to pool (${sessionPool.size}/$poolSize)")
                             
                             // Start audio immediately
                             sendPreRecordedAudioToSession(webSocket, character, sessionIndex)
                         } else {
                             // Timeout - clean up the WebSocket and log detailed info
-                            Log.e(TAG, "⏰ [$contactName] Session #${sessionIndex} WebSocket timed out after 10 seconds - cleaning up")
+                            Log.e(TAG, "[$contactName] Session #${sessionIndex} WebSocket timed out after 10 seconds - cleaning up")
                             webSocket.disconnect()
                         }
                     } else {
-                        Log.e(TAG, "❌ [$contactName] Failed to create WebSocket for session #${sessionIndex}")
+                        Log.e(TAG, "[$contactName] Failed to create WebSocket for session #${sessionIndex}")
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "[$contactName] Error creating timer-based session #${sessionIndex}", e)
@@ -251,20 +251,20 @@ class SessionManager private constructor(
             val isActuallyDead = !session.webSocket.isConnected() || session.job.isCancelled
             
             if (isOldEnough && isActuallyDead) {
-                Log.d(TAG, "🗑️ Removing dead session for ${session.character} (age: ${sessionAge/1000}s)")
+                Log.d(TAG, "Removing dead session for ${session.character} (age: ${sessionAge/1000}s)")
                 session.job.cancel()
                 iterator.remove()
             }
         }
         
-        Log.d(TAG, "🏊 [$contactName] Pool status: ${sessionPool.size}/$poolSize sessions")
+        Log.d(TAG, "[$contactName] Pool status: ${sessionPool.size}/$poolSize sessions")
     }
     
     // This function is no longer needed with the timer-based approach
     
     private suspend fun sendPreRecordedAudioToSession(webSocket: SesameWebSocket, character: String, sessionNumber: Int) {
         try {
-            Log.i(TAG, "🎵 Sending pre-recorded audio to background session #$sessionNumber ($character)")
+            Log.i(TAG, "Sending pre-recorded audio to background session #$sessionNumber ($character)")
             
             // Use contact-specific audio files
             val audioFileName = when (contactName.lowercase()) {
@@ -290,7 +290,7 @@ class SessionManager private constructor(
                     
                     val success = webSocket.sendAudioData(chunk)
                     if (!success) {
-                        Log.e(TAG, "❌ Failed to send audio chunk $i to $character")
+                        Log.e(TAG, "Failed to send audio chunk $i to $character")
                         break
                     }
                     
@@ -312,7 +312,7 @@ class SessionManager private constructor(
                     state.promptProgress = 1.0f
                     state.isPromptComplete = true
                     state.isAvailable = true
-                    Log.i(TAG, "✅ Session #$sessionNumber ($character) prompt complete - session is now done")
+                    Log.i(TAG, "Session #$sessionNumber ($character) prompt complete - session is now done")
                 }
                 
                 // Wait for AI response processing
@@ -325,7 +325,7 @@ class SessionManager private constructor(
                         
                         // Check if session is still not in use, then replace it
                         if (!state.isInUse) {
-                            Log.i(TAG, "🔄 Session #$sessionNumber ($character) done and unused - replacing with new session")
+                            Log.i(TAG, "Session #$sessionNumber ($character) done and unused - replacing with new session")
                             
                             // Remove the completed session
                             state.job.cancel()
@@ -340,13 +340,13 @@ class SessionManager private constructor(
                                 pendingCreations.decrementAndGet()
                             }
                         } else {
-                            Log.i(TAG, "📞 Session #$sessionNumber ($character) is in use - keeping it")
+                            Log.i(TAG, "Session #$sessionNumber ($character) is in use - keeping it")
                         }
                     }
                 }
                 
             } else {
-                Log.e(TAG, "❌ Failed to load audio file for background session #$sessionNumber ($character)")
+                Log.e(TAG, "Failed to load audio file for background session #$sessionNumber ($character)")
             }
             
         } catch (e: Exception) {
@@ -366,7 +366,7 @@ class SessionManager private constructor(
         }
         
         if (availableSessions.isEmpty()) {
-            Log.w(TAG, "⚠️ [$contactName] No available sessions in pool")
+            Log.w(TAG, "[$contactName] No available sessions in pool")
             return null
         }
         
@@ -378,7 +378,7 @@ class SessionManager private constructor(
         bestSession?.let { session ->
             session.isInUse = true
             val status = if (session.isPromptComplete) "complete" else "${(session.promptProgress * 100).toInt()}%"
-            Log.i(TAG, "🎯 [$contactName] Using session (prompt $status)")
+            Log.i(TAG, "[$contactName] Using session (prompt $status)")
         }
         
         return bestSession
@@ -389,7 +389,7 @@ class SessionManager private constructor(
      */
     fun returnSession(sessionState: SessionState) {
         sessionState.isInUse = false
-        Log.d(TAG, "🔄 Returned session ${sessionState.character} to pool - can be reused")
+        Log.d(TAG, "Returned session ${sessionState.character} to pool - can be reused")
         // No replacement needed - session continues to exist and can be reused
     }
     
@@ -400,7 +400,7 @@ class SessionManager private constructor(
         sessionState.job.cancel()
         sessionState.webSocket.disconnect()
         sessionPool.remove(sessionState)
-        Log.d(TAG, "🗑️ Removed session ${sessionState.character} from pool")
+        Log.d(TAG, "Removed session ${sessionState.character} from pool")
         
         // Create a replacement session to maintain pool size
         pendingCreations.incrementAndGet()
@@ -440,7 +440,7 @@ class SessionManager private constructor(
         }.thenBy { it.promptProgress })
         
         return bestSession?.let {
-            Log.d(TAG, "🔍 [$contactName] Session progress check: ${it.promptProgress * 100}% complete=${it.isPromptComplete}")
+            Log.d(TAG, "[$contactName] Session progress check: ${it.promptProgress * 100}% complete=${it.isPromptComplete}")
             Pair(it.promptProgress, it.isPromptComplete)
         }
     }
@@ -464,7 +464,7 @@ class SessionManager private constructor(
     
     fun shutdown() {
         if (isRunning.compareAndSet(true, false)) {
-            Log.i(TAG, "🛑 [$contactName] Shutting down session pool")
+            Log.i(TAG, "[$contactName] Shutting down session pool")
             
             // Cancel all sessions
             sessionPool.forEach { session ->

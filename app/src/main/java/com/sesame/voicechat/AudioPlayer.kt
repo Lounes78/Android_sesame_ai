@@ -149,7 +149,7 @@ class AudioPlayer(private var sampleRate: Int = 24000) {
                     playbackStarted = true
                     playbackStartTime = System.currentTimeMillis()
                     expectedPlaybackTime = playbackStartTime
-                    Log.i(TAG, "🎵 AudioTrack started with $bufferSize chunks pre-filled")
+                    Log.i(TAG, "AudioTrack started with $bufferSize chunks pre-filled")
                 }
             }
             
@@ -221,7 +221,7 @@ class AudioPlayer(private var sampleRate: Int = 24000) {
                         // No audio available - buffer underrun
                         if (playbackStarted) {
                             // If buffer runs completely dry, pause and restart pre-fill
-                            Log.w(TAG, "🛑 Buffer completely empty - pausing AudioTrack for refill")
+                            Log.w(TAG, "Buffer completely empty - pausing AudioTrack for refill")
                             audioTrack?.pause()
                             playbackStarted = false
                             expectedPlaybackTime = 0L
