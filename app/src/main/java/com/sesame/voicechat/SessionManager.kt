@@ -28,13 +28,32 @@ class SessionManager private constructor(
         
         fun getAllInstances(): Map<String, SessionManager> = INSTANCES.toMap()
         
+        fun clearAllInstances() {
+            synchronized(this) {
+                INSTANCES.values.forEach { it.shutdown() }
+                INSTANCES.clear()
+            }
+        }
+        
         // Map app contact names to backend character names
-        private fun getBackendCharacter(contactName: String): String {
-            return when (contactName.lowercase()) {
+        private fun getBackendCharacter(contactKey: String): String {
+            // Extract character from contactKey (e.g., "Kira-EN" -> "Kira")
+            val character = contactKey.split("-").firstOrNull()?.lowercase() ?: contactKey.lowercase()
+            return when (character) {
                 "kira" -> "Maya"
                 "hugo" -> "Maya"  // Both contacts use Maya backend
-                else -> contactName // Fallback to original name
+                else -> character // Fallback to original name
             }
+        }
+        
+        // Extract language from contact key (e.g., "Kira-EN" -> "EN")
+        private fun getLanguageFromKey(contactKey: String): String {
+            return contactKey.split("-").getOrNull(1) ?: "EN" // Default to English
+        }
+        
+        // Extract character name from contact key (e.g., "Kira-EN" -> "Kira")
+        private fun getCharacterFromKey(contactKey: String): String {
+            return contactKey.split("-").firstOrNull() ?: contactKey
         }
     }
     
@@ -84,20 +103,34 @@ class SessionManager private constructor(
             
             while (isRunning.get()) {
                 try {
-                    // Check if we need more sessions for normal pool
-                    val currentSessions = sessionPool.size
-                    val pendingSessions = pendingCreations.get()
-                    val totalPlanned = currentSessions + pendingSessions
-                    
-                    if (totalPlanned < poolSize && !creationInProgress.get()) {
-                        Log.i(TAG, "[$contactName] Creating session to maintain pool (${currentSessions}+${pendingSessions}/${poolSize})")
-                        createSessionWithTimer()
-                    } else if (totalPlanned > poolSize) {
-                        Log.w(TAG, "[$contactName] Pool overshooting detected (${totalPlanned}/${poolSize}) - skipping creation")
+                    // ATOMIC pool size check - prevent all race conditions
+                    val shouldCreateSession = synchronized(this@SessionManager) {
+                        val currentSessions = sessionPool.size
+                        val pendingSessions = pendingCreations.get()
+                        val totalPlanned = currentSessions + pendingSessions
+                        
+                        when {
+                            totalPlanned < poolSize && !creationInProgress.get() -> {
+                                Log.i(TAG, "[$contactName] Creating session to maintain pool (${currentSessions}+${pendingSessions}/${poolSize})")
+                                true
+                            }
+                            totalPlanned >= poolSize -> {
+                                if (totalPlanned > poolSize) {
+                                    Log.w(TAG, "[$contactName] Pool overshooting detected (${totalPlanned}/${poolSize}) - skipping creation")
+                                }
+                                false
+                            }
+                            else -> false
+                        }
                     }
                     
-                    // Check if we need to create buffer sessions for end-of-cycle gap
-                    checkAndCreateCycleBuffer()
+                    // Create session outside synchronized block
+                    if (shouldCreateSession) {
+                        createSessionWithTimer()
+                    } else {
+                        // Clean up any dead sessions to free up space
+                        cleanupDeadSessions()
+                    }
                     
                     // Wait for next interval before creating another session
                     delay(intervalMs)
@@ -109,36 +142,8 @@ class SessionManager private constructor(
         }
     }
     
-    private suspend fun checkAndCreateCycleBuffer() {
-        // Find sessions that are 75% or more complete
-        val nearCompletionSessions = sessionPool.count { session ->
-            session.promptProgress >= 0.75f && !session.isPromptComplete
-        }
-        
-        // If we have sessions near completion and haven't created buffer yet
-        if (nearCompletionSessions >= 3 && !cycleBufferCreated.get()) {
-            val bufferSize = 2 // Create 2 buffer sessions to bridge the gap
-            Log.i(TAG, "[$contactName] Creating $bufferSize buffer sessions for end-of-cycle gap (${nearCompletionSessions} sessions at 75%+)")
-            
-            cycleBufferCreated.set(true)
-            
-            // Create buffer sessions with slight stagger
-            repeat(bufferSize) { index ->
-                scope.launch {
-                    delay(index * 1000L) // 1 second stagger between buffer sessions
-                    createSessionWithTimer()
-                }
-            }
-        }
-        
-        // Reset buffer flag when cycle restarts (all sessions either complete or restarted)
-        val completedSessions = sessionPool.count { it.isPromptComplete }
-        val totalSessions = sessionPool.size
-        if (completedSessions >= poolSize / 2 && cycleBufferCreated.get()) {
-            Log.d(TAG, "[$contactName] Cycle restarting - resetting buffer flag (${completedSessions}/${totalSessions} complete)")
-            cycleBufferCreated.set(false)
-        }
-    }
+    // REMOVED: Buffer session logic was causing overshooting
+    // Pool maintenance now handles all session creation properly
     
     private suspend fun createSessionWithTimer() {
         // Prevent multiple concurrent session creations
@@ -148,7 +153,20 @@ class SessionManager private constructor(
         }
         
         try {
-            pendingCreations.incrementAndGet()
+            // ATOMIC check and increment
+            val shouldProceed = synchronized(this@SessionManager) {
+                val currentSessions = sessionPool.size
+                val pendingSessions = pendingCreations.get()
+                if (currentSessions + pendingSessions < poolSize) {
+                    pendingCreations.incrementAndGet()
+                    true
+                } else {
+                    Log.w(TAG, "[$contactName] Pool size check failed during creation (${currentSessions}+${pendingSessions}/${poolSize}) - aborting")
+                    false
+                }
+            }
+            
+            if (!shouldProceed) return
             
             val validToken = tokenManager.getValidIdToken()
             if (validToken == null) {
@@ -164,13 +182,6 @@ class SessionManager private constructor(
             // Wait 2 seconds before creating WebSocket with jitter to prevent thundering herd
             val jitter = (0..500).random()
             delay(2000L + jitter)
-            
-            // Double-check we still need this session before creating
-            val currentSessions = sessionPool.size
-            if (currentSessions >= poolSize) {
-                Log.w(TAG, "[$contactName] Pool full during creation (${currentSessions}/${poolSize}) - aborting session #${sessionIndex}")
-                return
-            }
             
             scope.launch {
                 try {
@@ -241,23 +252,31 @@ class SessionManager private constructor(
         val currentTime = System.currentTimeMillis()
         val GRACE_PERIOD_MS = 15000L // 15 seconds grace period for new sessions
         
-        val iterator = sessionPool.iterator()
-        while (iterator.hasNext()) {
-            val session = iterator.next()
-            val sessionAge = currentTime - session.createdAt
+        synchronized(this@SessionManager) {
+            val iterator = sessionPool.iterator()
+            var removed = 0
+            while (iterator.hasNext()) {
+                val session = iterator.next()
+                val sessionAge = currentTime - session.createdAt
+                
+                // Remove sessions that are dead, old and unused, or marked as unavailable
+                val isOldEnough = sessionAge > GRACE_PERIOD_MS
+                val isActuallyDead = !session.webSocket.isConnected() || session.job.isCancelled
+                val isMarkedForRemoval = !session.isAvailable && !session.isInUse
+                
+                if ((isOldEnough && isActuallyDead) || isMarkedForRemoval) {
+                    Log.d(TAG, "[$contactName] Removing dead/unused session for ${session.character} (age: ${sessionAge/1000}s)")
+                    session.job.cancel()
+                    session.webSocket.disconnect()
+                    iterator.remove()
+                    removed++
+                }
+            }
             
-            // Remove sessions that are old and not connected
-            val isOldEnough = sessionAge > GRACE_PERIOD_MS
-            val isActuallyDead = !session.webSocket.isConnected() || session.job.isCancelled
-            
-            if (isOldEnough && isActuallyDead) {
-                Log.d(TAG, "Removing dead session for ${session.character} (age: ${sessionAge/1000}s)")
-                session.job.cancel()
-                iterator.remove()
+            if (removed > 0) {
+                Log.i(TAG, "[$contactName] Cleaned up $removed sessions - pool status: ${sessionPool.size}/$poolSize")
             }
         }
-        
-        Log.d(TAG, "[$contactName] Pool status: ${sessionPool.size}/$poolSize sessions")
     }
     
     // This function is no longer needed with the timer-based approach
@@ -266,20 +285,64 @@ class SessionManager private constructor(
         try {
             Log.i(TAG, "Sending pre-recorded audio to background session #$sessionNumber ($character)")
             
-            // Use contact-specific audio files
-            val audioFileName = when (contactName.lowercase()) {
-                "kira" -> "kira.wav"
-                "hugo" -> "hugo.wav"
-                else -> "openai-fm-coral-eternal-optimist.wav" // Fallback
+            // Use character and language specific audio files
+            val characterName = getCharacterFromKey(contactName).lowercase()
+            val language = getLanguageFromKey(contactName).lowercase()
+            
+            // CRITICAL DEBUG - This will show us which SessionManager is being used!
+            Log.e(TAG, "🚨🚨🚨 AUDIO FILE SELECTION EMERGENCY DEBUG 🚨🚨🚨")
+            Log.e(TAG, "🚨 SessionManager contactName: '$contactName'")
+            Log.e(TAG, "🚨 Extracted character: '$characterName'")
+            Log.e(TAG, "🚨 Extracted language: '$language'")
+            
+            val audioFileName = when (characterName) {
+                "kira" -> when (language) {
+                    "fr" -> {
+                        Log.e(TAG, "🚨 SELECTED: kira_en.wav (French Kira - using English audio as fallback)")
+                        "kira_en.wav"  // Use English audio for French since French files were removed
+                    }
+                    else -> {
+                        Log.e(TAG, "🚨 SELECTED: kira_en.wav (English Kira, language was '$language')")
+                        "kira_en.wav"
+                    }
+                }
+                "hugo" -> when (language) {
+                    "fr" -> {
+                        Log.e(TAG, "🚨 SELECTED: hugo_en.wav (French Hugo - using English audio as fallback)")
+                        "hugo_en.wav"  // Use English audio for French since French files were removed
+                    }
+                    else -> {
+                        Log.e(TAG, "🚨 SELECTED: hugo_en.wav (English Hugo, language was '$language')")
+                        "hugo_en.wav"
+                    }
+                }
+                else -> {
+                    Log.e(TAG, "🚨 SELECTED: kira_en.wav (Fallback, character was '$characterName')")
+                    "kira_en.wav"
+                }
             }
+            
+            Log.e(TAG, "🚨 FINAL AUDIO FILE: $audioFileName")
             
             val audioChunks = audioFileProcessor.loadWavFile(audioFileName)
             if (audioChunks != null && audioChunks.isNotEmpty()) {
                 
+                // Calculate real-time chunk duration for natural speech simulation
+                // After processing: 16kHz, 16-bit, mono
+                val sampleRate = 16000 // TARGET_SAMPLE_RATE from AudioFileProcessor
+                val bytesPerSample = 2 // 16-bit
+                val channels = 1 // Mono after conversion
+                val chunkSize = 2048 // CHUNK_SIZE from AudioFileProcessor (1024 samples * 2 bytes)
+                
+                val samplesPerChunk = chunkSize / bytesPerSample / channels
+                val chunkDurationMs = (samplesPerChunk * 1000L) / sampleRate
+                
+                Log.i(TAG, "⏱️ Real-time chunk timing: ${chunkDurationMs}ms per chunk (${samplesPerChunk} samples at ${sampleRate}Hz)")
+                
                 // Find the session state to update progress
                 val sessionState = sessionPool.find { it.webSocket == webSocket }
                 
-                // Send audio chunks
+                // Send audio chunks at real-time rate
                 for (i in audioChunks.indices) {
                     val chunk = audioChunks[i]
                     
@@ -299,8 +362,8 @@ class SessionManager private constructor(
                         state.promptProgress = (i + 1).toFloat() / audioChunks.size
                     }
                     
-                    // Original timing - 64ms delay between chunks
-                    delay(64)
+                    // Real-time delay based on actual audio chunk duration
+                    delay(chunkDurationMs)
                 }
                 
                 // Send silence to signal end of speech
@@ -318,27 +381,16 @@ class SessionManager private constructor(
                 // Wait for AI response processing
                 delay(2000)
                 
-                // Session is now "done" - schedule it for replacement
+                // Session is now "done" - mark for cleanup but DON'T auto-replace
+                // Let pool maintenance handle replacements to prevent overshooting
                 sessionState?.let { state ->
                     scope.launch {
                         delay(5000) // Keep the completed session available for 5 seconds for immediate use
                         
-                        // Check if session is still not in use, then replace it
+                        // Check if session is still not in use, then mark for removal
                         if (!state.isInUse) {
-                            Log.i(TAG, "Session #$sessionNumber ($character) done and unused - replacing with new session")
-                            
-                            // Remove the completed session
-                            state.job.cancel()
-                            state.webSocket.disconnect()
-                            sessionPool.remove(state)
-                            
-                            // Create a new session to maintain pool size
-                            pendingCreations.incrementAndGet()
-                            try {
-                                createSessionWithTimer()
-                            } finally {
-                                pendingCreations.decrementAndGet()
-                            }
+                            Log.i(TAG, "Session #$sessionNumber ($character) done and unused - will be replaced by pool maintenance")
+                            state.isAvailable = false // Mark as not available, but don't remove yet
                         } else {
                             Log.i(TAG, "Session #$sessionNumber ($character) is in use - keeping it")
                         }
@@ -397,19 +449,12 @@ class SessionManager private constructor(
      * Remove a session from the pool only when it's truly done (WebSocket failed, etc.)
      */
     fun removeSession(sessionState: SessionState) {
-        sessionState.job.cancel()
-        sessionState.webSocket.disconnect()
-        sessionPool.remove(sessionState)
-        Log.d(TAG, "Removed session ${sessionState.character} from pool")
-        
-        // Create a replacement session to maintain pool size
-        pendingCreations.incrementAndGet()
-        scope.launch {
-            try {
-                createSessionWithTimer()
-            } finally {
-                pendingCreations.decrementAndGet()
-            }
+        synchronized(this@SessionManager) {
+            sessionState.job.cancel()
+            sessionState.webSocket.disconnect()
+            sessionPool.remove(sessionState)
+            Log.d(TAG, "Removed session ${sessionState.character} from pool - pool maintenance will create replacement")
+            // DON'T create replacement here - let pool maintenance handle it
         }
     }
     
