@@ -137,10 +137,32 @@ class AudioFileProcessor(private val context: Context) {
     }
     
     private fun resampleAudio(audioData: ByteArray, fromRate: Int, toRate: Int, channels: Int): ByteArray {
+        // Safety checks to prevent divide by zero
+        if (toRate <= 0 || fromRate <= 0 || channels <= 0) {
+            Log.e(TAG, "Invalid parameters: fromRate=$fromRate, toRate=$toRate, channels=$channels - returning original data")
+            return audioData
+        }
+        
         // Simple linear interpolation resampling
         val samplesCount = audioData.size / (2 * channels) // 16-bit samples
+        if (samplesCount <= 0) {
+            Log.e(TAG, "No samples to resample: audioSize=${audioData.size}, channels=$channels - returning original data")
+            return audioData
+        }
+        
         val ratio = fromRate.toDouble() / toRate.toDouble()
+        if (ratio <= 0.0 || !ratio.isFinite()) {
+            Log.e(TAG, "Invalid ratio: $ratio - returning original data")
+            return audioData
+        }
+        
         val newSamplesCount = (samplesCount / ratio).toInt()
+        if (newSamplesCount <= 0) {
+            Log.e(TAG, "Invalid newSamplesCount: $newSamplesCount - returning original data")
+            return audioData
+        }
+        
+        Log.d(TAG, "Resampling: $samplesCount samples, ${fromRate}Hz -> ${toRate}Hz")
         
         val buffer = ByteBuffer.wrap(audioData).order(ByteOrder.LITTLE_ENDIAN)
         val output = ByteBuffer.allocate(newSamplesCount * 2 * channels).order(ByteOrder.LITTLE_ENDIAN)

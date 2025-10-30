@@ -44,17 +44,15 @@ class SesameApplication : Application() {
             return
         }
         
-        // Initialize session pools for character-language combinations
+        // Initialize session pools for character-language combinations to support language-specific prompts
         val contactKeys = mutableListOf<String>()
         
-        // Create all 4 character-language combinations
+        // Create only English character combinations (French temporarily disabled)
         if (config.kiraEnabled && allTokens.kira != null) {
             contactKeys.add("Kira-EN")
-            contactKeys.add("Kira-FR")
         }
         if (config.hugoEnabled && allTokens.hugo != null) {
             contactKeys.add("Hugo-EN")
-            contactKeys.add("Hugo-FR")
         }
         
         if (contactKeys.isEmpty()) {
@@ -90,11 +88,11 @@ class SesameApplication : Application() {
         
         // Create contact-specific TokenManager using the character name for tokens
         val tokenManager = TokenManager(this, characterName).apply {
-            // Store tokens for this contact if not already stored
-            if (!hasStoredTokens()) {
-                Log.i(TAG, "[$contactKey] Storing tokens from configuration...")
-                storeTokens(contactTokens.idToken, contactTokens.refreshToken)
-            }
+            // FORCE RELOAD: Clear any existing tokens to use updated tokens from configuration
+            clearStoredTokensToForceReload()
+            
+            Log.i(TAG, "[$contactKey] Loading fresh tokens from configuration...")
+            storeTokens(contactTokens.idToken, contactTokens.refreshToken)
         }
         tokenManagers[contactKey] = tokenManager
         

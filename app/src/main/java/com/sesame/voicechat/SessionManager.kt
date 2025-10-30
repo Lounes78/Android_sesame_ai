@@ -36,24 +36,23 @@ class SessionManager private constructor(
         }
         
         // Map app contact names to backend character names
-        private fun getBackendCharacter(contactKey: String): String {
-            // Extract character from contactKey (e.g., "Kira-EN" -> "Kira")
-            val character = contactKey.split("-").firstOrNull()?.lowercase() ?: contactKey.lowercase()
-            return when (character) {
+        private fun getBackendCharacter(contactName: String): String {
+            val character = extractCharacterFromKey(contactName)
+            return when (character.lowercase()) {
                 "kira" -> "Maya"
                 "hugo" -> "Maya"  // Both contacts use Maya backend
                 else -> character // Fallback to original name
             }
         }
         
-        // Extract language from contact key (e.g., "Kira-EN" -> "EN")
-        private fun getLanguageFromKey(contactKey: String): String {
-            return contactKey.split("-").getOrNull(1) ?: "EN" // Default to English
+        // Extract character from contact key (e.g., "Kira-EN" -> "Kira" or "Kira" -> "Kira")
+        private fun extractCharacterFromKey(contactKey: String): String {
+            return contactKey.split("-").firstOrNull() ?: contactKey
         }
         
-        // Extract character name from contact key (e.g., "Kira-EN" -> "Kira")
-        private fun getCharacterFromKey(contactKey: String): String {
-            return contactKey.split("-").firstOrNull() ?: contactKey
+        // Extract language from contact key (e.g., "Kira-EN" -> "EN" or "Kira" -> "EN")
+        private fun extractLanguageFromKey(contactKey: String): String {
+            return contactKey.split("-").getOrNull(1) ?: "EN" // Default to English
         }
     }
     
@@ -186,14 +185,8 @@ class SessionManager private constructor(
             scope.launch {
                 try {
                 
-                    // Create WebSocket with language support
-                    val language = getLanguageFromKey(contactName).lowercase()
-                    val websocketLanguage = when (language) {
-                        "fr" -> "fr-FR"
-                        else -> "en-US"
-                    }
-                    Log.i(TAG, "[$contactName] Creating WebSocket for session #${sessionIndex} ($character) with language: $websocketLanguage")
-                    val webSocket = SesameWebSocket(validToken, character, websocketLanguage).apply {
+                    Log.i(TAG, "[$contactName] Creating WebSocket for session #${sessionIndex} ($character)")
+                    val webSocket = SesameWebSocket(validToken, character, "RP-Android").apply {
                         onConnectCallback = {
                             Log.d(TAG, "[$contactName] Background session #${sessionIndex} connected for $character")
                         }
@@ -290,64 +283,32 @@ class SessionManager private constructor(
         try {
             Log.i(TAG, "Sending pre-recorded audio to background session #$sessionNumber ($character)")
             
-            // Use character and language specific audio files
-            val characterName = getCharacterFromKey(contactName).lowercase()
-            val language = getLanguageFromKey(contactName).lowercase()
+            // Extract character and language from contact name for language-specific prompt selection
+            val characterName = extractCharacterFromKey(contactName).lowercase()
+            val language = extractLanguageFromKey(contactName).lowercase()
             
-            // CRITICAL DEBUG - This will show us which SessionManager is being used!
-            Log.e(TAG, "🚨🚨🚨 AUDIO FILE SELECTION EMERGENCY DEBUG 🚨🚨🚨")
-            Log.e(TAG, "🚨 SessionManager contactName: '$contactName'")
-            Log.e(TAG, "🚨 Extracted character: '$characterName'")
-            Log.e(TAG, "🚨 Extracted language: '$language'")
-            
+            // Use character + language specific audio files matching your naming convention
             val audioFileName = when (characterName) {
                 "kira" -> when (language) {
-                    "fr" -> {
-                        Log.e(TAG, "🚨 SELECTED: kira_fr.wav (French Kira)")
-                        "kira_fr.wav"  // Now using actual French audio file
-                    }
-                    else -> {
-                        Log.e(TAG, "🚨 SELECTED: kira_en.wav (English Kira, language was '$language')")
-                        "kira_en.wav"
-                    }
+                    "fr" -> "kira_fr.wav"
+                    else -> "kira_en.wav" // Default to English
                 }
                 "hugo" -> when (language) {
-                    "fr" -> {
-                        Log.e(TAG, "🚨 SELECTED: hugo_fr.wav (French Hugo)")
-                        "hugo_fr.wav"  // Now using actual French audio file
-                    }
-                    else -> {
-                        Log.e(TAG, "🚨 SELECTED: hugo_en.wav (English Hugo, language was '$language')")
-                        "hugo_en.wav"
-                    }
+                    "fr" -> "hugo_fr.wav"
+                    else -> "hugo_en.wav" // Default to English
                 }
-                else -> {
-                    Log.e(TAG, "🚨 SELECTED: kira_en.wav (Fallback, character was '$characterName')")
-                    "kira_en.wav"
-                }
+                else -> "kira_en.wav" // Fallback to English Kira
             }
             
-            Log.e(TAG, "🚨 FINAL AUDIO FILE: $audioFileName")
+            Log.i(TAG, "[$contactName] Using prompt file: $audioFileName (character: $characterName, language: $language)")
             
             val audioChunks = audioFileProcessor.loadWavFile(audioFileName)
             if (audioChunks != null && audioChunks.isNotEmpty()) {
                 
-                // Calculate real-time chunk duration for natural speech simulation
-                // After processing: 16kHz, 16-bit, mono
-                val sampleRate = 16000 // TARGET_SAMPLE_RATE from AudioFileProcessor
-                val bytesPerSample = 2 // 16-bit
-                val channels = 1 // Mono after conversion
-                val chunkSize = 2048 // CHUNK_SIZE from AudioFileProcessor (1024 samples * 2 bytes)
-                
-                val samplesPerChunk = chunkSize / bytesPerSample / channels
-                val chunkDurationMs = (samplesPerChunk * 1000L) / sampleRate
-                
-                Log.i(TAG, "⏱️ Real-time chunk timing: ${chunkDurationMs}ms per chunk (${samplesPerChunk} samples at ${sampleRate}Hz)")
-                
                 // Find the session state to update progress
                 val sessionState = sessionPool.find { it.webSocket == webSocket }
                 
-                // Send audio chunks at real-time rate
+                // Send audio chunks (simplified like working version)
                 for (i in audioChunks.indices) {
                     val chunk = audioChunks[i]
                     
@@ -367,8 +328,8 @@ class SessionManager private constructor(
                         state.promptProgress = (i + 1).toFloat() / audioChunks.size
                     }
                     
-                    // Real-time delay based on actual audio chunk duration
-                    delay(chunkDurationMs)
+                    // Original timing - 64ms delay between chunks (like working version)
+                    delay(64)
                 }
                 
                 // Send silence to signal end of speech
@@ -386,16 +347,27 @@ class SessionManager private constructor(
                 // Wait for AI response processing
                 delay(2000)
                 
-                // Session is now "done" - mark for cleanup but DON'T auto-replace
-                // Let pool maintenance handle replacements to prevent overshooting
+                // Session is now "done" - schedule it for replacement (like working version)
                 sessionState?.let { state ->
                     scope.launch {
                         delay(5000) // Keep the completed session available for 5 seconds for immediate use
                         
-                        // Check if session is still not in use, then mark for removal
+                        // Check if session is still not in use, then replace it
                         if (!state.isInUse) {
-                            Log.i(TAG, "Session #$sessionNumber ($character) done and unused - will be replaced by pool maintenance")
-                            state.isAvailable = false // Mark as not available, but don't remove yet
+                            Log.i(TAG, "Session #$sessionNumber ($character) done and unused - replacing with new session")
+                            
+                            // Remove the completed session
+                            state.job.cancel()
+                            state.webSocket.disconnect()
+                            sessionPool.remove(state)
+                            
+                            // Create a new session to maintain pool size
+                            pendingCreations.incrementAndGet()
+                            try {
+                                createSessionWithTimer()
+                            } finally {
+                                pendingCreations.decrementAndGet()
+                            }
                         } else {
                             Log.i(TAG, "Session #$sessionNumber ($character) is in use - keeping it")
                         }

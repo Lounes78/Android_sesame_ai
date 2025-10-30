@@ -159,11 +159,12 @@
                 android:id="@+id/frenchRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Français"
-                android:textColor="@android:color/white"
+                android:text="Français (Coming Soon)"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="18sp"
                 android:layout_margin="16dp"
-                android:buttonTint="@android:color/white" />
+                android:buttonTint="@android:color/darker_gray"
+                android:enabled="false" />
 
         </RadioGroup>
 

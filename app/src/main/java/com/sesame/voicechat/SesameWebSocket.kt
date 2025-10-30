@@ -14,7 +14,6 @@ import kotlin.concurrent.thread
 class SesameWebSocket(
     private val idToken: String,
     private val character: String = "Miles",
-    private val language: String = "en-US",
     private val clientName: String = "RP-Android"
 ) {
     
@@ -266,7 +265,7 @@ class SesameWebSocket(
         if (sessionId == null) return
         
         val clientMetadata = JSONObject().apply {
-            put("language", language)
+            put("language", "en-US")
             put("user_agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36")
             put("mobile_browser", true)
             put("media_devices", getMediaDevicesJsonArray())

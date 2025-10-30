@@ -81,6 +81,10 @@ class ContactSelectionActivity : AppCompatActivity() {
         // Connect button
         connectButton = findViewById(R.id.connectButton)
         
+        // Disable French temporarily and set English as default
+        frenchRadioButton.isEnabled = false
+        englishRadioButton.isChecked = true
+        
         // Set initial selection state
         updateCharacterSelection()
         updateConnectButton()
@@ -188,17 +192,21 @@ class ContactSelectionActivity : AppCompatActivity() {
     private fun updateSessionProgress() {
         val availableContacts = application.getAvailableContacts()
         
-        // Update all 4 session pool combinations
+        // Update only English session pools (French temporarily disabled)
         updatePoolStatus("Kira-EN", kiraEnPoolStatus, availableContacts)
-        updatePoolStatus("Kira-FR", kiraFrPoolStatus, availableContacts)
         updatePoolStatus("Hugo-EN", hugoEnPoolStatus, availableContacts)
-        updatePoolStatus("Hugo-FR", hugoFrPoolStatus, availableContacts)
+        
+        // Set French pools as disabled
+        kiraFrPoolStatus.text = "Kira (Français): Coming Soon"
+        kiraFrPoolStatus.alpha = 0.5f
+        hugoFrPoolStatus.text = "Hugo (Français): Coming Soon"
+        hugoFrPoolStatus.alpha = 0.5f
     }
     
-    private fun updatePoolStatus(poolKey: String, statusView: TextView, availableContacts: List<String>) {
+    private fun updatePoolStatus(contactKey: String, statusView: TextView, availableContacts: List<String>) {
         try {
-            if (poolKey in availableContacts) {
-                val sessionManager = application.getSessionManagerForContact(poolKey)
+            if (contactKey in availableContacts) {
+                val sessionManager = application.getSessionManagerForContact(contactKey)
                 val progressInfo = sessionManager.getSessionProgress()
                 val allSessionsInfo = sessionManager.getAllSessionsProgress()
                 
@@ -212,15 +220,19 @@ class ContactSelectionActivity : AppCompatActivity() {
                     0
                 }
                 
-                statusView.text = "${poolKey.replace("-", " (")})}: ${availableCount} available, ${readyCount} ready, ${mostAdvancedProgress}% progress"
+                // Format display name (e.g., "Kira-EN" -> "Kira (English)")
+                val displayName = contactKey.replace("-EN", " (English)").replace("-FR", " (Français)")
+                statusView.text = "$displayName: ${availableCount} available, ${readyCount} ready, ${mostAdvancedProgress}% progress"
                 statusView.alpha = 1.0f
                 
             } else {
-                statusView.text = "${poolKey.replace("-", " (")})}: Not configured"
+                val displayName = contactKey.replace("-EN", " (English)").replace("-FR", " (Français)")
+                statusView.text = "$displayName: Not configured"
                 statusView.alpha = 0.5f
             }
         } catch (e: Exception) {
-            statusView.text = "${poolKey.replace("-", " (")})}: Error"
+            val displayName = contactKey.replace("-EN", " (English)").replace("-FR", " (Français)")
+            statusView.text = "$displayName: Error"
             statusView.alpha = 0.5f
         }
     }
@@ -237,11 +249,12 @@ class ContactSelectionActivity : AppCompatActivity() {
             else -> "EN" // Fallback
         }
         
-        val contactKey = "${selectedCharacter}-${selectedLanguage}"
+        // Create language-specific contact key for proper prompt selection
+        val languageSpecificContactKey = "${selectedCharacter}-${selectedLanguage}"
         
-        // Verify contact is available before starting
+        // Verify the specific character-language session pool is available before starting
         val availableContacts = application.getAvailableContacts()
-        if (contactKey !in availableContacts) {
+        if (languageSpecificContactKey !in availableContacts) {
             connectButton.text = "Session not ready, please wait..."
             return
         }
@@ -249,7 +262,7 @@ class ContactSelectionActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java).apply {
             putExtra("CONTACT_NAME", selectedCharacter)
             putExtra("LANGUAGE", selectedLanguage)
-            putExtra("CONTACT_KEY", contactKey)
+            putExtra("CONTACT_KEY", languageSpecificContactKey) // e.g., "Kira-EN", "Hugo-FR"
         }
         startActivity(intent)
         
