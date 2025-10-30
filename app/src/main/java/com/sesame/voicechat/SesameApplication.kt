@@ -119,6 +119,17 @@ class SesameApplication : Application() {
         return configPrefs.hasConfiguration()
     }
     
+    fun forceRestartAllSessionPools() {
+        Log.i(TAG, "Force restarting all session pools to clear French sessions")
+        
+        // Get current configuration
+        val config = configPrefs.getConfiguration()
+        if (config != null) {
+            // Restart with current configuration to clear any existing French sessions
+            restartWithNewConfiguration(config)
+        }
+    }
+    
     fun restartWithNewConfiguration(config: SessionConfiguration) {
         Log.i(TAG, "Restarting with new configuration: $config")
         

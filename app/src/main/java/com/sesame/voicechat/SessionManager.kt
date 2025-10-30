@@ -283,24 +283,18 @@ class SessionManager private constructor(
         try {
             Log.i(TAG, "Sending pre-recorded audio to background session #$sessionNumber ($character)")
             
-            // Extract character and language from contact name for language-specific prompt selection
+            // FORCE ENGLISH ONLY - French temporarily disabled
             val characterName = extractCharacterFromKey(contactName).lowercase()
             val language = extractLanguageFromKey(contactName).lowercase()
             
-            // Use character + language specific audio files matching your naming convention
+            // Force English audio files only (French disabled)
             val audioFileName = when (characterName) {
-                "kira" -> when (language) {
-                    "fr" -> "kira_fr.wav"
-                    else -> "kira_en.wav" // Default to English
-                }
-                "hugo" -> when (language) {
-                    "fr" -> "hugo_fr.wav"
-                    else -> "hugo_en.wav" // Default to English
-                }
+                "kira" -> "kira_en.wav"
+                "hugo" -> "hugo_en.wav"
                 else -> "kira_en.wav" // Fallback to English Kira
             }
             
-            Log.i(TAG, "[$contactName] Using prompt file: $audioFileName (character: $characterName, language: $language)")
+            Log.i(TAG, "[$contactName] FORCED ENGLISH: Using prompt file: $audioFileName (character: $characterName, detected language: $language, contactName: $contactName)")
             
             val audioChunks = audioFileProcessor.loadWavFile(audioFileName)
             if (audioChunks != null && audioChunks.isNotEmpty()) {
