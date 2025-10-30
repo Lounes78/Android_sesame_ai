@@ -3375,6 +3375,7 @@ int id end 0x7f0900c6
 int id endCallButton 0x7f0900c7
 int id endToStart 0x7f0900c8
 int id end_padder 0x7f0900c9
+int id englishRadioButton 0x7f090245
 int id enterAlways 0x7f0900ca
 int id enterAlwaysCollapsed 0x7f0900cb
 int id error_message 0x7f0900cc
@@ -3397,6 +3398,7 @@ int id flip 0x7f0900dc
 int id floating 0x7f0900dd
 int id forever 0x7f0900de
 int id fragment_container_view_tag 0x7f0900df
+int id frenchRadioButton 0x7f090246
 int id frost 0x7f0900e0
 int id fullscreen_header 0x7f0900e1
 int id ghost_view 0x7f0900e2
@@ -3416,9 +3418,10 @@ int id home 0x7f0900ef
 int id homeAsUp 0x7f0900f0
 int id honorRequest 0x7f0900f1
 int id horizontal_only 0x7f0900f2
-int id hugoConnectButton 0x7f0900f3
-int id hugoConnectionStatusText 0x7f0900f4
-int id hugoPoolStatusText 0x7f0900f5
+int id hugoCharacterCard 0x7f090247
+int id hugoEnPoolStatus 0x7f090248
+int id hugoFrPoolStatus 0x7f090249
+int id hugoSelectedIndicator 0x7f09024a
 int id hugo_checkbox 0x7f0900f6
 int id icon 0x7f0900f7
 int id icon_group 0x7f0900f8
@@ -3444,11 +3447,13 @@ int id italic 0x7f09010b
 int id item_touch_helper_previous_elevation 0x7f09010c
 int id jumpToEnd 0x7f09010d
 int id jumpToStart 0x7f09010e
-int id kiraConnectButton 0x7f09010f
-int id kiraConnectionStatusText 0x7f090110
-int id kiraPoolStatusText 0x7f090111
+int id kiraCharacterCard 0x7f09024b
+int id kiraEnPoolStatus 0x7f09024c
+int id kiraFrPoolStatus 0x7f09024d
+int id kiraSelectedIndicator 0x7f09024e
 int id kira_checkbox 0x7f090112
 int id labeled 0x7f090113
+int id languageRadioGroup 0x7f09024f
 int id layout 0x7f090114
 int id layoutTTSOptions 0x7f090115
 int id left 0x7f090116

@@ -1,50 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@android:color/black"
-    android:padding="24dp">
+    android:fillViewport="true">
 
-    <!-- Time-based Greeting -->
-    <TextView
-        android:id="@+id/greetingText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Morning, kira"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="48dp"
-        android:layout_marginBottom="64dp"
-        android:gravity="center" />
-
-    <!-- Contact Cards Container -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:weightSum="2">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <!-- Kira Connect Button -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <!-- Time-based Greeting -->
+        <TextView
+            android:id="@+id/greetingText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="16dp">
+            android:text="Morning"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:gravity="center" />
 
+        <!-- Character Selection Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Character"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="16dp"
+            android:gravity="center" />
+
+        <!-- Character Cards Container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="32dp">
+
+            <!-- Kira Character Card -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/kiraConnectButton"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_gravity="center"
-                app:cardCornerRadius="100dp"
-                app:cardElevation="12dp"
+                android:id="@+id/kiraCharacterCard"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="70dp"
+                app:cardElevation="8dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground">
@@ -60,53 +67,31 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Kira"
-                        android:textSize="28sp"
+                        android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/white"
-                        android:layout_marginBottom="8dp" />
+                        android:textColor="@android:color/white" />
 
                     <TextView
-                        android:id="@+id/kiraConnectionStatusText"
+                        android:id="@+id/kiraSelectedIndicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tap to connect"
-                        android:textSize="14sp"
+                        android:text="✓ Selected"
+                        android:textSize="12sp"
                         android:textColor="@android:color/white"
-                        android:alpha="0.8"
-                        android:gravity="center" />
+                        android:layout_marginTop="4dp"
+                        android:visibility="visible" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Kira Pool Status -->
-            <TextView
-                android:id="@+id/kiraPoolStatusText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Kira Pool: Initializing..."
-                android:textSize="12sp"
-                android:textColor="@android:color/white"
-                android:alpha="0.6"
-                android:gravity="center"
-                android:layout_marginTop="16dp" />
-        </LinearLayout>
-
-        <!-- Hugo Connect Button -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="16dp">
-
+            <!-- Hugo Character Card -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/hugoConnectButton"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_gravity="center"
-                app:cardCornerRadius="100dp"
-                app:cardElevation="12dp"
+                android:id="@+id/hugoCharacterCard"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="70dp"
+                app:cardElevation="8dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground">
@@ -122,38 +107,135 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hugo"
-                        android:textSize="28sp"
+                        android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/white"
-                        android:layout_marginBottom="8dp" />
+                        android:textColor="@android:color/white" />
 
                     <TextView
-                        android:id="@+id/hugoConnectionStatusText"
+                        android:id="@+id/hugoSelectedIndicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tap to connect"
-                        android:textSize="14sp"
+                        android:text="✓ Selected"
+                        android:textSize="12sp"
                         android:textColor="@android:color/white"
-                        android:alpha="0.8"
-                        android:gravity="center" />
+                        android:layout_marginTop="4dp"
+                        android:visibility="invisible" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Hugo Pool Status -->
-            <TextView
-                android:id="@+id/hugoPoolStatusText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Hugo Pool: Initializing..."
-                android:textSize="12sp"
-                android:textColor="@android:color/white"
-                android:alpha="0.6"
-                android:gravity="center"
-                android:layout_marginTop="16dp" />
         </LinearLayout>
+
+        <!-- Language Selection Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Language"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="16dp"
+            android:gravity="center" />
+
+        <RadioGroup
+            android:id="@+id/languageRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="32dp">
+
+            <RadioButton
+                android:id="@+id/englishRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="English"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:layout_margin="16dp"
+                android:buttonTint="@android:color/white" />
+
+            <RadioButton
+                android:id="@+id/frenchRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Français"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:layout_margin="16dp"
+                android:buttonTint="@android:color/white" />
+
+        </RadioGroup>
+
+        <!-- Session Pool Status Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Session Pool Status"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="12dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/kiraEnPoolStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kira (English): Initializing..."
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:alpha="0.7"
+            android:gravity="center"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/kiraFrPoolStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kira (Français): Initializing..."
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:alpha="0.7"
+            android:gravity="center"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/hugoEnPoolStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hugo (English): Initializing..."
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:alpha="0.7"
+            android:gravity="center"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/hugoFrPoolStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hugo (Français): Initializing..."
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:alpha="0.7"
+            android:gravity="center"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Connect Button -->
+        <Button
+            android:id="@+id/connectButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Select a language"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/contact_selector"
+            android:layout_marginTop="16dp"
+            android:enabled="false"
+            android:alpha="0.5" />
 
     </LinearLayout>
 
-
-</LinearLayout>
+</ScrollView>

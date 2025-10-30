@@ -3,6 +3,10 @@ package com.sesame.voicechat
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.CheckBox
+import android.widget.RadioGroup
+import android.widget.RadioButton
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import kotlinx.coroutines.*
@@ -16,15 +20,28 @@ class ContactSelectionActivity : AppCompatActivity() {
     
     private lateinit var greetingText: TextView
     
-    // Kira UI components
-    private lateinit var kiraConnectButton: CardView
-    private lateinit var kiraConnectionStatusText: TextView
-    private lateinit var kiraPoolStatusText: TextView
+    // Character selection UI components
+    private lateinit var kiraCharacterCard: CardView
+    private lateinit var hugoCharacterCard: CardView
+    private lateinit var kiraSelectedIndicator: TextView
+    private lateinit var hugoSelectedIndicator: TextView
     
-    // Hugo UI components
-    private lateinit var hugoConnectButton: CardView
-    private lateinit var hugoConnectionStatusText: TextView
-    private lateinit var hugoPoolStatusText: TextView
+    // Language selection UI components
+    private lateinit var languageRadioGroup: RadioGroup
+    private lateinit var englishRadioButton: RadioButton
+    private lateinit var frenchRadioButton: RadioButton
+    
+    // Session pool status UI components
+    private lateinit var kiraEnPoolStatus: TextView
+    private lateinit var kiraFrPoolStatus: TextView
+    private lateinit var hugoEnPoolStatus: TextView
+    private lateinit var hugoFrPoolStatus: TextView
+    
+    // Connect button
+    private lateinit var connectButton: Button
+    
+    // Selection state
+    private var selectedCharacter: String = "Kira" // Default to Kira
     
     private lateinit var application: SesameApplication
     private var progressUpdateJob: Job? = null
@@ -44,15 +61,29 @@ class ContactSelectionActivity : AppCompatActivity() {
     private fun initializeViews() {
         greetingText = findViewById(R.id.greetingText)
         
-        // Kira UI components
-        kiraConnectButton = findViewById(R.id.kiraConnectButton)
-        kiraConnectionStatusText = findViewById(R.id.kiraConnectionStatusText)
-        kiraPoolStatusText = findViewById(R.id.kiraPoolStatusText)
+        // Character selection UI components
+        kiraCharacterCard = findViewById(R.id.kiraCharacterCard)
+        hugoCharacterCard = findViewById(R.id.hugoCharacterCard)
+        kiraSelectedIndicator = findViewById(R.id.kiraSelectedIndicator)
+        hugoSelectedIndicator = findViewById(R.id.hugoSelectedIndicator)
         
-        // Hugo UI components
-        hugoConnectButton = findViewById(R.id.hugoConnectButton)
-        hugoConnectionStatusText = findViewById(R.id.hugoConnectionStatusText)
-        hugoPoolStatusText = findViewById(R.id.hugoPoolStatusText)
+        // Language selection UI components
+        languageRadioGroup = findViewById(R.id.languageRadioGroup)
+        englishRadioButton = findViewById(R.id.englishRadioButton)
+        frenchRadioButton = findViewById(R.id.frenchRadioButton)
+        
+        // Session pool status UI components
+        kiraEnPoolStatus = findViewById(R.id.kiraEnPoolStatus)
+        kiraFrPoolStatus = findViewById(R.id.kiraFrPoolStatus)
+        hugoEnPoolStatus = findViewById(R.id.hugoEnPoolStatus)
+        hugoFrPoolStatus = findViewById(R.id.hugoFrPoolStatus)
+        
+        // Connect button
+        connectButton = findViewById(R.id.connectButton)
+        
+        // Set initial selection state
+        updateCharacterSelection()
+        updateConnectButton()
     }
     
     private fun setupGreeting() {
@@ -63,16 +94,62 @@ class ContactSelectionActivity : AppCompatActivity() {
             else -> "Evening"
         }
         
-        greetingText.text = "$greeting, kira"
+        greetingText.text = greeting
     }
     
     private fun setupClickListeners() {
-        kiraConnectButton.setOnClickListener {
-            startVoiceChat("Kira")
+        kiraCharacterCard.setOnClickListener {
+            selectedCharacter = "Kira"
+            updateCharacterSelection()
+            updateConnectButton()
         }
         
-        hugoConnectButton.setOnClickListener {
-            startVoiceChat("Hugo")
+        hugoCharacterCard.setOnClickListener {
+            selectedCharacter = "Hugo"
+            updateCharacterSelection()
+            updateConnectButton()
+        }
+        
+        languageRadioGroup.setOnCheckedChangeListener { _, _ -> updateConnectButton() }
+        
+        connectButton.setOnClickListener {
+            startVoiceChat()
+        }
+    }
+    
+    private fun updateCharacterSelection() {
+        when (selectedCharacter) {
+            "Kira" -> {
+                kiraSelectedIndicator.visibility = android.view.View.VISIBLE
+                hugoSelectedIndicator.visibility = android.view.View.INVISIBLE
+                kiraCharacterCard.alpha = 1.0f
+                hugoCharacterCard.alpha = 0.7f
+            }
+            "Hugo" -> {
+                kiraSelectedIndicator.visibility = android.view.View.INVISIBLE
+                hugoSelectedIndicator.visibility = android.view.View.VISIBLE
+                kiraCharacterCard.alpha = 0.7f
+                hugoCharacterCard.alpha = 1.0f
+            }
+        }
+    }
+    
+    private fun updateConnectButton() {
+        val selectedLanguageId = languageRadioGroup.checkedRadioButtonId
+        val hasLanguageSelected = selectedLanguageId != -1
+        connectButton.isEnabled = hasLanguageSelected
+        
+        if (hasLanguageSelected) {
+            val language = when (selectedLanguageId) {
+                R.id.englishRadioButton -> "English"
+                R.id.frenchRadioButton -> "Français"
+                else -> "Unknown"
+            }
+            connectButton.text = "Connect to $selectedCharacter ($language)"
+            connectButton.alpha = 1.0f
+        } else {
+            connectButton.text = "Select a language"
+            connectButton.alpha = 0.5f
         }
     }
     
@@ -81,12 +158,6 @@ class ContactSelectionActivity : AppCompatActivity() {
     }
     
     private fun initializeSessionPoolsIfNeeded() {
-        // Check if session pools are already running
-        val availableContacts = application.getAvailableContacts()
-        if (availableContacts.isNotEmpty()) {
-            return // Already initialized
-        }
-        
         // Check if we have a saved configuration
         if (!application.hasConfiguration()) {
             // No configuration - redirect to configuration screen
@@ -96,12 +167,9 @@ class ContactSelectionActivity : AppCompatActivity() {
             return
         }
         
-        // We have configuration but no running session pools - initialize them
-        val configPrefs = ConfigurationPreferences(this)
-        val config = configPrefs.getConfiguration()
-        if (config != null) {
-            application.initializeWithConfiguration(config)
-        }
+        // Configuration exists, but don't auto-start session pools
+        // They should only start when user clicks "START SESSION POOLS" in configuration
+        // This allows the user to modify configuration before starting pools
     }
     
     private fun startProgressTracking() {
@@ -120,67 +188,68 @@ class ContactSelectionActivity : AppCompatActivity() {
     private fun updateSessionProgress() {
         val availableContacts = application.getAvailableContacts()
         
-        // Update Kira status if available
-        if ("Kira" in availableContacts) {
-            updateContactProgress("Kira", kiraConnectionStatusText, kiraPoolStatusText)
-        } else {
-            kiraConnectionStatusText.text = "No tokens available"
-            kiraPoolStatusText.text = "Kira: Not configured"
-            kiraConnectButton.alpha = 0.5f
-            kiraConnectButton.isClickable = false
+        // Update all 4 session pool combinations
+        updatePoolStatus("Kira-EN", kiraEnPoolStatus, availableContacts)
+        updatePoolStatus("Kira-FR", kiraFrPoolStatus, availableContacts)
+        updatePoolStatus("Hugo-EN", hugoEnPoolStatus, availableContacts)
+        updatePoolStatus("Hugo-FR", hugoFrPoolStatus, availableContacts)
+    }
+    
+    private fun updatePoolStatus(poolKey: String, statusView: TextView, availableContacts: List<String>) {
+        try {
+            if (poolKey in availableContacts) {
+                val sessionManager = application.getSessionManagerForContact(poolKey)
+                val progressInfo = sessionManager.getSessionProgress()
+                val allSessionsInfo = sessionManager.getAllSessionsProgress()
+                
+                val availableCount = allSessionsInfo.count { it.isConnected }
+                val readyCount = allSessionsInfo.count { it.isComplete }
+                
+                val mostAdvancedProgress = if (progressInfo != null) {
+                    val (progress, _) = progressInfo
+                    (progress * 100).toInt()
+                } else {
+                    0
+                }
+                
+                statusView.text = "${poolKey.replace("-", " (")})}: ${availableCount} available, ${readyCount} ready, ${mostAdvancedProgress}% progress"
+                statusView.alpha = 1.0f
+                
+            } else {
+                statusView.text = "${poolKey.replace("-", " (")})}: Not configured"
+                statusView.alpha = 0.5f
+            }
+        } catch (e: Exception) {
+            statusView.text = "${poolKey.replace("-", " (")})}: Error"
+            statusView.alpha = 0.5f
+        }
+    }
+    
+    private fun startVoiceChat() {
+        val selectedLanguageId = languageRadioGroup.checkedRadioButtonId
+        if (selectedLanguageId == -1) {
+            return // No language selected
         }
         
-        // Update Hugo status if available
-        if ("Hugo" in availableContacts) {
-            updateContactProgress("Hugo", hugoConnectionStatusText, hugoPoolStatusText)
-        } else {
-            hugoConnectionStatusText.text = "No tokens available"
-            hugoPoolStatusText.text = "Hugo: Not configured"
-            hugoConnectButton.alpha = 0.5f
-            hugoConnectButton.isClickable = false
+        val selectedLanguage = when (selectedLanguageId) {
+            R.id.englishRadioButton -> "EN"
+            R.id.frenchRadioButton -> "FR"
+            else -> "EN" // Fallback
         }
-    }
-    
-    private fun updateContactProgress(contactName: String, statusText: TextView, poolText: TextView) {
-        try {
-            val sessionManager = application.getSessionManagerForContact(contactName)
-            
-            // Get session progress info
-            val progressInfo = sessionManager.getSessionProgress()
-            val poolStatus = sessionManager.getPoolStatus()
-            
-            // Update connection status based on best session
-            val connectionStatus = if (progressInfo != null) {
-                val (progress, isComplete) = progressInfo
-                val progressPercent = (progress * 100).toInt()
-                when {
-                    isComplete -> "Ready to connect!"
-                    progressPercent > 0 -> "Preparing... ${progressPercent}%"
-                    else -> "Getting ready..."
-                }
-            } else {
-                "Initializing sessions..."
-            }
-            statusText.text = connectionStatus
-            
-            // Update pool status
-            poolText.text = poolStatus
-            
-        } catch (e: Exception) {
-            statusText.text = "Error loading status"
-            poolText.text = "$contactName: Error"
-        }
-    }
-    
-    private fun startVoiceChat(contactName: String) {
+        
+        val contactKey = "${selectedCharacter}-${selectedLanguage}"
+        
         // Verify contact is available before starting
         val availableContacts = application.getAvailableContacts()
-        if (contactName !in availableContacts) {
-            return // Contact not available, button should be disabled
+        if (contactKey !in availableContacts) {
+            connectButton.text = "Session not ready, please wait..."
+            return
         }
         
         val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("CONTACT_NAME", contactName)
+            putExtra("CONTACT_NAME", selectedCharacter)
+            putExtra("LANGUAGE", selectedLanguage)
+            putExtra("CONTACT_KEY", contactKey)
         }
         startActivity(intent)
         

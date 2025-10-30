@@ -15,7 +15,7 @@ class SesameApplication : Application() {
     
     // Legacy support for single sessionManager
     val sessionManager: SessionManager
-        get() = getSessionManagerForContact("Kira") // Default to Kira for backward compatibility
+        get() = getSessionManagerForContact("Kira-EN") // Default to Kira English for backward compatibility
     
     override fun onCreate() {
         super.onCreate()
@@ -44,57 +44,68 @@ class SesameApplication : Application() {
             return
         }
         
-        // Initialize session pools only for enabled contacts
-        val contacts = mutableListOf<String>()
+        // Initialize session pools for character-language combinations
+        val contactKeys = mutableListOf<String>()
+        
+        // Create all 4 character-language combinations
         if (config.kiraEnabled && allTokens.kira != null) {
-            contacts.add("Kira")
+            contactKeys.add("Kira-EN")
+            contactKeys.add("Kira-FR")
         }
         if (config.hugoEnabled && allTokens.hugo != null) {
-            contacts.add("Hugo")
+            contactKeys.add("Hugo-EN")
+            contactKeys.add("Hugo-FR")
         }
         
-        if (contacts.isEmpty()) {
+        if (contactKeys.isEmpty()) {
             Log.w(TAG, "No enabled contacts with valid tokens found")
             return
         }
         
-        Log.i(TAG, "Initializing session pools for: ${contacts.joinToString(", ")} with pool size ${config.poolSize}")
+        Log.i(TAG, "Initializing session pools for: ${contactKeys.joinToString(", ")} with pool size ${config.poolSize}")
         
-        contacts.forEach { contactName ->
-            initializeContactSessionPool(contactName, config.poolSize)
+        contactKeys.forEach { contactKey ->
+            initializeContactSessionPool(contactKey, config.poolSize)
         }
         
         Log.i(TAG, "All session pools initialized - sessions will continue running for entire app lifecycle!")
     }
     
-    private fun initializeContactSessionPool(contactName: String, poolSize: Int) {
-        Log.i(TAG, "Initializing session pool for $contactName with pool size $poolSize")
+    private fun initializeContactSessionPool(contactKey: String, poolSize: Int) {
+        Log.i(TAG, "Initializing session pool for $contactKey with pool size $poolSize")
         
-        // Get contact-specific tokens
-        val contactTokens = TokenConfig.getTokensForContact(this, contactName)
-        if (contactTokens == null) {
-            Log.e(TAG, "No tokens found for $contactName")
+        // Extract character from contact key (e.g., "Kira-EN" -> "Kira")
+        val characterName = contactKey.split("-").firstOrNull()
+        if (characterName == null) {
+            Log.e(TAG, "Invalid contact key format: $contactKey")
             return
         }
         
-        // Create contact-specific TokenManager
-        val tokenManager = TokenManager(this, contactName).apply {
+        // Get contact-specific tokens using the character name
+        val contactTokens = TokenConfig.getTokensForContact(this, characterName)
+        if (contactTokens == null) {
+            Log.e(TAG, "No tokens found for character $characterName (contactKey: $contactKey)")
+            return
+        }
+        
+        // Create contact-specific TokenManager using the character name for tokens
+        val tokenManager = TokenManager(this, characterName).apply {
             // Store tokens for this contact if not already stored
             if (!hasStoredTokens()) {
-                Log.i(TAG, "[$contactName] Storing tokens from configuration...")
+                Log.i(TAG, "[$contactKey] Storing tokens from configuration...")
                 storeTokens(contactTokens.idToken, contactTokens.refreshToken)
             }
         }
-        tokenManagers[contactName] = tokenManager
+        tokenManagers[contactKey] = tokenManager
         
-        // Create contact-specific SessionManager with configured pool size
-        val sessionManager = SessionManager.getInstance(this, contactName, poolSize)
-        sessionManagers[contactName] = sessionManager
+        // Create contact-specific SessionManager with configured pool size using the full contact key
+        val sessionManager = SessionManager.getInstance(this, contactKey, poolSize)
+        sessionManagers[contactKey] = sessionManager
         
         // Initialize the session pool
         sessionManager.initialize(tokenManager)
         
-        Log.i(TAG, "[$contactName] Session pool initialization started with $poolSize sessions")
+        Log.i(TAG, "[$contactKey] Session pool initialization started with $poolSize sessions")
     }
     
     fun getSessionManagerForContact(contactName: String): SessionManager {

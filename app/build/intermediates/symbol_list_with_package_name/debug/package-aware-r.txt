@@ -3376,6 +3376,7 @@ id end
 id endCallButton
 id endToStart
 id end_padder
+id englishRadioButton
 id enterAlways
 id enterAlwaysCollapsed
 id error_message
@@ -3398,6 +3399,7 @@ id flip
 id floating
 id forever
 id fragment_container_view_tag
+id frenchRadioButton
 id frost
 id fullscreen_header
 id ghost_view
@@ -3417,9 +3419,10 @@ id home
 id homeAsUp
 id honorRequest
 id horizontal_only
-id hugoConnectButton
-id hugoConnectionStatusText
-id hugoPoolStatusText
+id hugoCharacterCard
+id hugoEnPoolStatus
+id hugoFrPoolStatus
+id hugoSelectedIndicator
 id hugo_checkbox
 id icon
 id icon_group
@@ -3445,11 +3448,13 @@ id italic
 id item_touch_helper_previous_elevation
 id jumpToEnd
 id jumpToStart
-id kiraConnectButton
-id kiraConnectionStatusText
-id kiraPoolStatusText
+id kiraCharacterCard
+id kiraEnPoolStatus
+id kiraFrPoolStatus
+id kiraSelectedIndicator
 id kira_checkbox
 id labeled
+id languageRadioGroup
 id layout
 id layoutTTSOptions
 id left

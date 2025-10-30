@@ -186,9 +186,14 @@ class SessionManager private constructor(
             scope.launch {
                 try {
                 
-                    // Create WebSocket
-                    Log.i(TAG, "[$contactName] Creating WebSocket for session #${sessionIndex} ($character)")
-                    val webSocket = SesameWebSocket(validToken, character).apply {
+                    // Create WebSocket with language support
+                    val language = getLanguageFromKey(contactName).lowercase()
+                    val websocketLanguage = when (language) {
+                        "fr" -> "fr-FR"
+                        else -> "en-US"
+                    }
+                    Log.i(TAG, "[$contactName] Creating WebSocket for session #${sessionIndex} ($character) with language: $websocketLanguage")
+                    val webSocket = SesameWebSocket(validToken, character, websocketLanguage).apply {
                         onConnectCallback = {
                             Log.d(TAG, "[$contactName] Background session #${sessionIndex} connected for $character")
                         }
@@ -298,8 +303,8 @@ class SessionManager private constructor(
             val audioFileName = when (characterName) {
                 "kira" -> when (language) {
                     "fr" -> {
-                        Log.e(TAG, "🚨 SELECTED: kira_en.wav (French Kira - using English audio as fallback)")
-                        "kira_en.wav"  // Use English audio for French since French files were removed
+                        Log.e(TAG, "🚨 SELECTED: kira_fr.wav (French Kira)")
+                        "kira_fr.wav"  // Now using actual French audio file
                     }
                     else -> {
                         Log.e(TAG, "🚨 SELECTED: kira_en.wav (English Kira, language was '$language')")
@@ -308,8 +313,8 @@ class SessionManager private constructor(
                 }
                 "hugo" -> when (language) {
                     "fr" -> {
-                        Log.e(TAG, "🚨 SELECTED: hugo_en.wav (French Hugo - using English audio as fallback)")
-                        "hugo_en.wav"  // Use English audio for French since French files were removed
+                        Log.e(TAG, "🚨 SELECTED: hugo_fr.wav (French Hugo)")
+                        "hugo_fr.wav"  // Now using actual French audio file
                     }
                     else -> {
                         Log.e(TAG, "🚨 SELECTED: hugo_en.wav (English Hugo, language was '$language')")
