@@ -7,6 +7,7 @@ import android.widget.CheckBox
 import android.widget.RadioGroup
 import android.widget.RadioButton
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import kotlinx.coroutines.*
@@ -26,19 +27,10 @@ class ContactSelectionActivity : AppCompatActivity() {
     private lateinit var kiraSelectedIndicator: TextView
     private lateinit var hugoSelectedIndicator: TextView
     
-    // Language selection UI components
-    private lateinit var languageRadioGroup: RadioGroup
-    private lateinit var englishRadioButton: RadioButton
-    private lateinit var frenchRadioButton: RadioButton
-    
     // Session pool status UI components
-    private lateinit var kiraEnPoolStatus: TextView
-    private lateinit var kiraFrPoolStatus: TextView
-    private lateinit var hugoEnPoolStatus: TextView
-    private lateinit var hugoFrPoolStatus: TextView
+    private lateinit var kiraPoolStatus: TextView
+    private lateinit var hugoPoolStatus: TextView
     
-    // Connect button
-    private lateinit var connectButton: Button
     
     // Selection state
     private var selectedCharacter: String = "Kira" // Default to Kira
@@ -67,27 +59,12 @@ class ContactSelectionActivity : AppCompatActivity() {
         kiraSelectedIndicator = findViewById(R.id.kiraSelectedIndicator)
         hugoSelectedIndicator = findViewById(R.id.hugoSelectedIndicator)
         
-        // Language selection UI components
-        languageRadioGroup = findViewById(R.id.languageRadioGroup)
-        englishRadioButton = findViewById(R.id.englishRadioButton)
-        frenchRadioButton = findViewById(R.id.frenchRadioButton)
-        
         // Session pool status UI components
-        kiraEnPoolStatus = findViewById(R.id.kiraEnPoolStatus)
-        kiraFrPoolStatus = findViewById(R.id.kiraFrPoolStatus)
-        hugoEnPoolStatus = findViewById(R.id.hugoEnPoolStatus)
-        hugoFrPoolStatus = findViewById(R.id.hugoFrPoolStatus)
-        
-        // Connect button
-        connectButton = findViewById(R.id.connectButton)
-        
-        // Disable French temporarily and set English as default
-        frenchRadioButton.isEnabled = false
-        englishRadioButton.isChecked = true
+        kiraPoolStatus = findViewById(R.id.kiraPoolStatus)
+        hugoPoolStatus = findViewById(R.id.hugoPoolStatus)
         
         // Set initial selection state
         updateCharacterSelection()
-        updateConnectButton()
     }
     
     private fun setupGreeting() {
@@ -105,18 +82,12 @@ class ContactSelectionActivity : AppCompatActivity() {
         kiraCharacterCard.setOnClickListener {
             selectedCharacter = "Kira"
             updateCharacterSelection()
-            updateConnectButton()
+            startVoiceChat()
         }
         
         hugoCharacterCard.setOnClickListener {
             selectedCharacter = "Hugo"
             updateCharacterSelection()
-            updateConnectButton()
-        }
-        
-        languageRadioGroup.setOnCheckedChangeListener { _, _ -> updateConnectButton() }
-        
-        connectButton.setOnClickListener {
             startVoiceChat()
         }
     }
@@ -138,24 +109,6 @@ class ContactSelectionActivity : AppCompatActivity() {
         }
     }
     
-    private fun updateConnectButton() {
-        val selectedLanguageId = languageRadioGroup.checkedRadioButtonId
-        val hasLanguageSelected = selectedLanguageId != -1
-        connectButton.isEnabled = hasLanguageSelected
-        
-        if (hasLanguageSelected) {
-            val language = when (selectedLanguageId) {
-                R.id.englishRadioButton -> "English"
-                R.id.frenchRadioButton -> "Français"
-                else -> "Unknown"
-            }
-            connectButton.text = "Connect to $selectedCharacter ($language)"
-            connectButton.alpha = 1.0f
-        } else {
-            connectButton.text = "Select a language"
-            connectButton.alpha = 0.5f
-        }
-    }
     
     private fun setupSessionManager() {
         application = getApplication() as SesameApplication
@@ -192,15 +145,9 @@ class ContactSelectionActivity : AppCompatActivity() {
     private fun updateSessionProgress() {
         val availableContacts = application.getAvailableContacts()
         
-        // Update only English session pools (French temporarily disabled)
-        updatePoolStatus("Kira-EN", kiraEnPoolStatus, availableContacts)
-        updatePoolStatus("Hugo-EN", hugoEnPoolStatus, availableContacts)
-        
-        // Set French pools as disabled
-        kiraFrPoolStatus.text = "Kira (Français): Coming Soon"
-        kiraFrPoolStatus.alpha = 0.5f
-        hugoFrPoolStatus.text = "Hugo (Français): Coming Soon"
-        hugoFrPoolStatus.alpha = 0.5f
+        // Update French-only session pools
+        updatePoolStatus("Kira-FR", kiraPoolStatus, availableContacts)
+        updatePoolStatus("Hugo-FR", hugoPoolStatus, availableContacts)
     }
     
     private fun updatePoolStatus(contactKey: String, statusView: TextView, availableContacts: List<String>) {
@@ -220,42 +167,34 @@ class ContactSelectionActivity : AppCompatActivity() {
                     0
                 }
                 
-                // Format display name (e.g., "Kira-EN" -> "Kira (English)")
-                val displayName = contactKey.replace("-EN", " (English)").replace("-FR", " (Français)")
+                // Format display name (e.g., "Kira-FR" -> "Kira (Français)")
+                val displayName = contactKey.replace("-FR", " (Français)")
                 statusView.text = "$displayName: ${availableCount} available, ${readyCount} ready, ${mostAdvancedProgress}% progress"
                 statusView.alpha = 1.0f
                 
             } else {
-                val displayName = contactKey.replace("-EN", " (English)").replace("-FR", " (Français)")
+                val displayName = contactKey.replace("-FR", " (Français)")
                 statusView.text = "$displayName: Not configured"
                 statusView.alpha = 0.5f
             }
         } catch (e: Exception) {
-            val displayName = contactKey.replace("-EN", " (English)").replace("-FR", " (Français)")
+            val displayName = contactKey.replace("-FR", " (Français)")
             statusView.text = "$displayName: Error"
             statusView.alpha = 0.5f
         }
     }
     
     private fun startVoiceChat() {
-        val selectedLanguageId = languageRadioGroup.checkedRadioButtonId
-        if (selectedLanguageId == -1) {
-            return // No language selected
-        }
+        // Always use French
+        val selectedLanguage = "FR"
         
-        val selectedLanguage = when (selectedLanguageId) {
-            R.id.englishRadioButton -> "EN"
-            R.id.frenchRadioButton -> "FR"
-            else -> "EN" // Fallback
-        }
-        
-        // Create language-specific contact key for proper prompt selection
-        val languageSpecificContactKey = "${selectedCharacter}-${selectedLanguage}"
+        // Create French contact key
+        val languageSpecificContactKey = "${selectedCharacter}-FR"
         
         // Verify the specific character-language session pool is available before starting
         val availableContacts = application.getAvailableContacts()
         if (languageSpecificContactKey !in availableContacts) {
-            connectButton.text = "Session not ready, please wait..."
+            Toast.makeText(this, "Session not ready for $selectedCharacter, please wait...", Toast.LENGTH_SHORT).show()
             return
         }
         

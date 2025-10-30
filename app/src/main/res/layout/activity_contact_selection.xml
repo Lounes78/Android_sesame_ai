@@ -126,47 +126,6 @@
 
         </LinearLayout>
 
-        <!-- Language Selection Section -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select Language"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="16dp"
-            android:gravity="center" />
-
-        <RadioGroup
-            android:id="@+id/languageRadioGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="32dp">
-
-            <RadioButton
-                android:id="@+id/englishRadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="English"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:layout_margin="16dp"
-                android:buttonTint="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/frenchRadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Français (Coming Soon)"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="18sp"
-                android:layout_margin="16dp"
-                android:buttonTint="@android:color/darker_gray"
-                android:enabled="false" />
-
-        </RadioGroup>
 
         <!-- Session Pool Status Section -->
         <TextView
@@ -180,18 +139,7 @@
             android:gravity="center" />
 
         <TextView
-            android:id="@+id/kiraEnPoolStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Kira (English): Initializing..."
-            android:textSize="12sp"
-            android:textColor="@android:color/white"
-            android:alpha="0.7"
-            android:gravity="center"
-            android:layout_marginBottom="4dp" />
-
-        <TextView
-            android:id="@+id/kiraFrPoolStatus"
+            android:id="@+id/kiraPoolStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Kira (Français): Initializing..."
@@ -202,18 +150,7 @@
             android:layout_marginBottom="4dp" />
 
         <TextView
-            android:id="@+id/hugoEnPoolStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hugo (English): Initializing..."
-            android:textSize="12sp"
-            android:textColor="@android:color/white"
-            android:alpha="0.7"
-            android:gravity="center"
-            android:layout_marginBottom="4dp" />
-
-        <TextView
-            android:id="@+id/hugoFrPoolStatus"
+            android:id="@+id/hugoPoolStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Hugo (Français): Initializing..."
@@ -223,19 +160,6 @@
             android:gravity="center"
             android:layout_marginBottom="32dp" />
 
-        <!-- Connect Button -->
-        <Button
-            android:id="@+id/connectButton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Select a language"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:background="@drawable/contact_selector"
-            android:layout_marginTop="16dp"
-            android:enabled="false"
-            android:alpha="0.5" />
 
     </LinearLayout>
 

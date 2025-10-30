@@ -15,7 +15,7 @@ class SesameApplication : Application() {
     
     // Legacy support for single sessionManager
     val sessionManager: SessionManager
-        get() = getSessionManagerForContact("Kira-EN") // Default to Kira English for backward compatibility
+        get() = getSessionManagerForContact("Kira-FR") // Default to Kira French
     
     override fun onCreate() {
         super.onCreate()
@@ -23,15 +23,14 @@ class SesameApplication : Application() {
         
         configPrefs = ConfigurationPreferences(this)
         
-        // Check if configuration exists - if not, defer initialization
+        // Never auto-start session pools - user must explicitly click "START SESSION POOLS"
         val config = configPrefs.getConfiguration()
         if (config == null) {
-            Log.i(TAG, "No configuration found - session pools will initialize after configuration")
-            return
+            Log.i(TAG, "No configuration found - waiting for user configuration")
+        } else {
+            Log.i(TAG, "Found existing configuration: $config")
+            Log.i(TAG, "Session pools will NOT start automatically - user must click 'START SESSION POOLS'")
         }
-        
-        Log.i(TAG, "Found configuration: $config")
-        initializeWithConfiguration(config)
     }
     
     fun initializeWithConfiguration(config: SessionConfiguration) {
@@ -44,15 +43,15 @@ class SesameApplication : Application() {
             return
         }
         
-        // Initialize session pools for character-language combinations to support language-specific prompts
+        // Create session managers but DON'T start them automatically
         val contactKeys = mutableListOf<String>()
         
-        // Create only English character combinations (French temporarily disabled)
+        // Create French-only sessions
         if (config.kiraEnabled && allTokens.kira != null) {
-            contactKeys.add("Kira-EN")
+            contactKeys.add("Kira-FR")
         }
         if (config.hugoEnabled && allTokens.hugo != null) {
-            contactKeys.add("Hugo-EN")
+            contactKeys.add("Hugo-FR")
         }
         
         if (contactKeys.isEmpty()) {
@@ -60,17 +59,18 @@ class SesameApplication : Application() {
             return
         }
         
-        Log.i(TAG, "Initializing session pools for: ${contactKeys.joinToString(", ")} with pool size ${config.poolSize}")
+        Log.i(TAG, "Preparing session managers for: ${contactKeys.joinToString(", ")} with pool size ${config.poolSize}")
+        Log.i(TAG, "Session pools will NOT start automatically - user must click 'START SESSION POOLS'")
         
         contactKeys.forEach { contactKey ->
-            initializeContactSessionPool(contactKey, config.poolSize)
+            prepareContactSessionManager(contactKey, config.poolSize)
         }
         
-        Log.i(TAG, "All session pools initialized - sessions will continue running for entire app lifecycle!")
+        Log.i(TAG, "All session managers prepared - waiting for user to start session pools!")
     }
     
-    private fun initializeContactSessionPool(contactKey: String, poolSize: Int) {
-        Log.i(TAG, "Initializing session pool for $contactKey with pool size $poolSize")
+    private fun prepareContactSessionManager(contactKey: String, poolSize: Int) {
+        Log.i(TAG, "Preparing session manager for $contactKey with pool size $poolSize (NOT starting yet)")
         
         // Extract character from contact key (e.g., "Kira-EN" -> "Kira")
         val characterName = contactKey.split("-").firstOrNull()
@@ -100,10 +100,36 @@ class SesameApplication : Application() {
         val sessionManager = SessionManager.getInstance(this, contactKey, poolSize)
         sessionManagers[contactKey] = sessionManager
         
-        // Initialize the session pool
+        // DON'T initialize the session pool yet - wait for user to click "START SESSION POOLS"
+        
+        Log.i(TAG, "[$contactKey] Session manager prepared - ready to start when user clicks button")
+    }
+    
+    private fun initializeContactSessionPool(contactKey: String, poolSize: Int) {
+        Log.i(TAG, "Starting session pool for $contactKey with pool size $poolSize")
+        
+        val tokenManager = tokenManagers[contactKey]
+        val sessionManager = sessionManagers[contactKey]
+        
+        if (tokenManager == null || sessionManager == null) {
+            Log.e(TAG, "Session manager or token manager not found for $contactKey")
+            return
+        }
+        
+        // NOW initialize the session pool
         sessionManager.initialize(tokenManager)
         
-        Log.i(TAG, "[$contactKey] Session pool initialization started with $poolSize sessions")
+        Log.i(TAG, "[$contactKey] Session pool started with $poolSize sessions")
+    }
+    
+    fun startAllSessionPools() {
+        Log.i(TAG, "Starting all prepared session pools...")
+        
+        sessionManagers.keys.forEach { contactKey ->
+            initializeContactSessionPool(contactKey, 2) // Use poolSize from config
+        }
+        
+        Log.i(TAG, "All session pools started!")
     }
     
     fun getSessionManagerForContact(contactName: String): SessionManager {
@@ -120,13 +146,33 @@ class SesameApplication : Application() {
     }
     
     fun forceRestartAllSessionPools() {
-        Log.i(TAG, "Force restarting all session pools to clear French sessions")
+        Log.i(TAG, "Force restarting all session pools to clear mixed language sessions")
         
         // Get current configuration
         val config = configPrefs.getConfiguration()
         if (config != null) {
-            // Restart with current configuration to clear any existing French sessions
+            // Restart with current configuration to clear any existing mixed sessions
             restartWithNewConfiguration(config)
+        }
+    }
+    
+    fun forceRestartToFixLanguageIssue() {
+        Log.i(TAG, "Force restarting to fix language session mixing issue")
+        
+        // Shutdown all existing session pools to clear old sessions
+        sessionManagers.values.forEach { it.shutdown() }
+        sessionManagers.clear()
+        tokenManagers.clear()
+        
+        // Clear static instances in SessionManager to force fresh creation
+        SessionManager.clearAllInstances()
+        
+        // Restart with current configuration
+        val config = configPrefs.getConfiguration()
+        if (config != null) {
+            initializeWithConfiguration(config)
+            // Auto-start the pools
+            startAllSessionPools()
         }
     }
     

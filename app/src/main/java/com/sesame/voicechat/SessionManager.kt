@@ -59,6 +59,8 @@ class SessionManager private constructor(
     data class SessionState(
         var webSocket: SesameWebSocket,
         val character: String,
+        val contactKey: String, // Add contactKey to distinguish language-specific sessions
+        val language: String, // SAFETY BELT: Store actual language for validation
         val createdAt: Long,
         var isPromptComplete: Boolean = false,
         var promptProgress: Float = 0f,
@@ -178,9 +180,12 @@ class SessionManager private constructor(
             
             Log.i(TAG, "[$contactName] Starting session #${sessionIndex} - WebSocket in 2s, audio immediately after")
             
-            // Wait 2 seconds before creating WebSocket with jitter to prevent thundering herd
-            val jitter = (0..500).random()
-            delay(2000L + jitter)
+            // Wait longer between connections to prevent rate limiting, with more jitter
+            val jitter = (1000..3000).random() // 1-3 second jitter
+            val baseDelay = 5000L // 5 second base delay
+            delay(baseDelay + jitter)
+            
+            Log.i(TAG, "[$contactName] Starting WebSocket connection for session #${sessionIndex} after ${(baseDelay + jitter)/1000}s delay")
             
             scope.launch {
                 try {
@@ -199,21 +204,29 @@ class SessionManager private constructor(
                     }
                     
                     if (webSocket.connect()) {
-                        // Wait for connection with more realistic timeout
+                        // Wait for connection with longer timeout
                         var attempts = 0
-                        val maxAttempts = 100 // 10 second timeout (100 × 100ms) - increased for stability
+                        val maxAttempts = 200 // 20 second timeout (200 × 100ms) - increased for concurrent connections
                         while (!webSocket.isConnected() && attempts < maxAttempts) {
                             delay(100)
                             attempts++
+                            
+                            // Log progress every 5 seconds
+                            if (attempts % 50 == 0) {
+                                Log.i(TAG, "[$contactName] Session #${sessionIndex} still connecting... ${attempts * 100}ms elapsed")
+                            }
                         }
                         
                         if (webSocket.isConnected()) {
                             Log.i(TAG, "[$contactName] Session #${sessionIndex} connected after ${attempts * 100}ms")
                             
                             // Create and add session to pool immediately after connection
+                            val actualLanguage = extractLanguageFromKey(contactName)
                             val sessionState = SessionState(
                                 webSocket = webSocket,
                                 character = character,
+                                contactKey = contactName, // Store the full contact key (e.g., "Kira-EN", "Kira-FR")
+                                language = actualLanguage, // SAFETY BELT: Store the actual language
                                 createdAt = System.currentTimeMillis(),
                                 job = coroutineContext[Job]!!
                             )
@@ -283,18 +296,24 @@ class SessionManager private constructor(
         try {
             Log.i(TAG, "Sending pre-recorded audio to background session #$sessionNumber ($character)")
             
-            // FORCE ENGLISH ONLY - French temporarily disabled
+            // Extract character and language from contact name for language-specific prompt selection
             val characterName = extractCharacterFromKey(contactName).lowercase()
             val language = extractLanguageFromKey(contactName).lowercase()
             
-            // Force English audio files only (French disabled)
+            // Use character + language specific audio files matching your naming convention
             val audioFileName = when (characterName) {
-                "kira" -> "kira_en.wav"
-                "hugo" -> "hugo_en.wav"
+                "kira" -> when (language) {
+                    "fr" -> "kira_fr.wav"
+                    else -> "kira_en.wav" // Default to English
+                }
+                "hugo" -> when (language) {
+                    "fr" -> "hugo_fr.wav"
+                    else -> "hugo_en.wav" // Default to English
+                }
                 else -> "kira_en.wav" // Fallback to English Kira
             }
             
-            Log.i(TAG, "[$contactName] FORCED ENGLISH: Using prompt file: $audioFileName (character: $characterName, detected language: $language, contactName: $contactName)")
+            Log.i(TAG, "[$contactName] Using prompt file: $audioFileName (character: $characterName, language: $language)")
             
             val audioChunks = audioFileProcessor.loadWavFile(audioFileName)
             if (audioChunks != null && audioChunks.isNotEmpty()) {
@@ -322,7 +341,8 @@ class SessionManager private constructor(
                         state.promptProgress = (i + 1).toFloat() / audioChunks.size
                     }
                     
-                    // Original timing - 64ms delay between chunks (like working version)
+                    // Correct timing for processed audio: All audio is converted to 16kHz mono by AudioFileProcessor
+                    // 2048 bytes = 1024 samples at 16kHz = 64ms per chunk for real-time playback
                     delay(64)
                 }
                 
@@ -384,8 +404,26 @@ class SessionManager private constructor(
      */
     fun getBestAvailableSession(preferredCharacter: String? = null): SessionState? {
         val backendCharacter = getBackendCharacter(contactName)
+        val requestedLanguage = extractLanguageFromKey(contactName)
+        
+        // SAFETY BELT: Filter by multiple criteria including language validation
         val availableSessions = sessionPool.filter {
-            it.isAvailable && !it.isInUse && it.webSocket.isConnected() && it.character == backendCharacter
+            it.isAvailable && !it.isInUse && it.webSocket.isConnected() &&
+            it.character == backendCharacter && it.contactKey == contactName && // Match exact contact key including language
+            it.language == requestedLanguage // SAFETY BELT: Refuse sessions with wrong language
+        }
+        
+        // Additional logging to catch cross-contamination
+        val wrongLanguageSessions = sessionPool.filter {
+            it.isAvailable && !it.isInUse && it.webSocket.isConnected() &&
+            it.character == backendCharacter && it.language != requestedLanguage
+        }
+        
+        if (wrongLanguageSessions.isNotEmpty()) {
+            Log.w(TAG, "[$contactName] SAFETY BELT: Found ${wrongLanguageSessions.size} sessions with wrong language:")
+            wrongLanguageSessions.forEach { session ->
+                Log.w(TAG, "[$contactName] Wrong session: contactKey=${session.contactKey}, storedLang=${session.language}, requestedLang=$requestedLanguage")
+            }
         }
         
         if (availableSessions.isEmpty()) {
@@ -443,7 +481,7 @@ class SessionManager private constructor(
     fun getSessionProgress(): Pair<Float, Boolean>? {
         val backendCharacter = getBackendCharacter(contactName)
         val contactSessions = sessionPool.filter {
-            it.character == backendCharacter && it.webSocket.isConnected()
+            it.character == backendCharacter && it.contactKey == contactName && it.webSocket.isConnected()
         }
         
         if (contactSessions.isEmpty()) {
@@ -466,8 +504,9 @@ class SessionManager private constructor(
      */
     fun getAllSessionsProgress(): List<SessionInfo> {
         val backendCharacter = getBackendCharacter(contactName)
-        val contactSessions = sessionPool.filter { it.character == backendCharacter }
-            .sortedBy { it.createdAt } // Sort by creation time to maintain consistent order
+        val contactSessions = sessionPool.filter {
+            it.character == backendCharacter && it.contactKey == contactName
+        }.sortedBy { it.createdAt } // Sort by creation time to maintain consistent order
         
         return contactSessions.map { session ->
             SessionInfo(

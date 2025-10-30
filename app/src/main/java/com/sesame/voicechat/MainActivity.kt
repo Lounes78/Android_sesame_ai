@@ -89,9 +89,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_call)
         
-        // Get contact name from intent
-        selectedContactName = intent.getStringExtra("CONTACT_NAME") ?: "Kira"
-        selectedCharacter = selectedContactName // Use contact name as character name
+        // Get contact name and language from intent (French-only)
+        selectedContactName = intent.getStringExtra("CONTACT_KEY") ?: "Kira-FR" // Use full contact key with French
+        selectedCharacter = intent.getStringExtra("CONTACT_NAME") ?: "Kira" // Display name without language
         
         initializeViews()
         setupAudioSystem()
@@ -340,7 +340,7 @@ class MainActivity : AppCompatActivity() {
         // Only remove the current session being used - others should continue
         currentSession?.let { session ->
             sessionManager.removeSession(session)
-            Log.i(TAG, "�️ Removed current session only - ${sessionManager.getPoolStatus()}")
+            Log.i(TAG, "Removed current session only - ${sessionManager.getPoolStatus()}")
         }
         
         // Clean up only local references - don't touch global systems

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="Session Pool Configuration"
         android:textSize="28sp"
-        android:textColor="@color/text_primary"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginBottom="32dp" />
@@ -81,47 +81,6 @@
 
     </LinearLayout>
 
-    <!-- Contact Selection Section -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/maya_card_background"
-        android:padding="20dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Active Contacts"
-            android:textSize="20sp"
-            android:textColor="@color/text_primary"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
-
-        <CheckBox
-            android:id="@+id/kira_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Kira (Maya Backend)"
-            android:textSize="18sp"
-            android:textColor="@color/text_primary"
-            android:checked="true"
-            android:buttonTint="@color/accent_blue"
-            android:padding="8dp" />
-
-        <CheckBox
-            android:id="@+id/hugo_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hugo (Maya Backend)"
-            android:textSize="18sp"
-            android:textColor="@color/text_primary"
-            android:checked="true"
-            android:buttonTint="@color/accent_blue"
-            android:padding="8dp" />
-
-    </LinearLayout>
 
     <!-- Start Button -->
     <Button
