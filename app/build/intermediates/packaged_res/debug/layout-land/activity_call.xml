@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@android:color/black">
+
+    <!-- Left Section: Call Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp">
+
+        <!-- Character Name -->
+        <TextView
+            android:id="@+id/characterName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kira"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Call Duration -->
+        <TextView
+            android:id="@+id/callDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:03"
+            android:textSize="24sp"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Connection Status -->
+        <TextView
+            android:id="@+id/connectionStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connected"
+            android:textSize="18sp"
+            android:textColor="@color/success_green"
+            android:gravity="center"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Controls Section -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <!-- Mute Button -->
+            <FrameLayout
+                android:id="@+id/muteButton"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/mute_button_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless">
+
+                <ImageView
+                    android:id="@+id/muteIcon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_mic"
+                    android:tint="@color/teal_accent" />
+
+            </FrameLayout>
+
+            <!-- End Call Button -->
+            <FrameLayout
+                android:id="@+id/endCallButton"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:background="@drawable/end_call_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_call_end"
+                    android:tint="@android:color/white" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Right Section: Voice Activity Indicator -->
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="32dp">
+
+        <!-- Pulsing Background Circle -->
+        <View
+            android:id="@+id/pulseBackground"
+            android:layout_width="280dp"
+            android:layout_height="280dp"
+            android:layout_gravity="center"
+            android:background="@drawable/voice_activity_gradient"
+            android:alpha="0.3" />
+
+        <!-- Main Voice Activity Button -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="120dp"
+            app:cardElevation="20dp">
+
+            <View
+                android:id="@+id/voiceActivityIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/voice_activity_gradient" />
+
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+
+    <!-- Initialization Overlay Screen -->
+    <RelativeLayout
+        android:id="@+id/initializationOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#DD000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Initialization Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="48dp">
+
+            <!-- Loading Animation Circle -->
+            <ProgressBar
+                android:id="@+id/initializationSpinner"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/teal_accent" />
+
+            <!-- Initialization Title -->
+            <TextView
+                android:id="@+id/initializationTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Initializing..."
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:layout_marginTop="32dp" />
+
+            <!-- Initialization Message -->
+            <TextView
+                android:id="@+id/initializationMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Setting up your conversation with the AI agent"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:alpha="0.8" />
+
+            <!-- Progress Bar -->
+            <ProgressBar
+                android:id="@+id/initializationProgress"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="80dp"
+                android:layout_marginEnd="80dp"
+                android:progressTint="@color/teal_accent"
+                android:progressBackgroundTint="@android:color/darker_gray"
+                android:max="100"
+                android:progress="0" />
+
+            <!-- Progress Text -->
+            <TextView
+                android:id="@+id/initializationProgressText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textSize="16sp"
+                android:textColor="@color/teal_accent"
+                android:gravity="center"
+                android:layout_marginTop="12dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

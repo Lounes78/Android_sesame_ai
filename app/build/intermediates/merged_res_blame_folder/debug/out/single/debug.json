@@ -4,10 +4,6 @@
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\contact_selector.xml"
     },
     {
-        "merged": "com.sesame.voicechat.app-merged_res-34:/layout_activity_contact_selection.xml.flat",
-        "source": "com.sesame.voicechat.app-main-36:/layout/activity_contact_selection.xml"
-    },
-    {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\mipmap-xhdpi_ic_launcher.webp.flat",
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\mipmap-xhdpi\\ic_launcher.webp"
     },
@@ -20,12 +16,12 @@
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\mipmap-hdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_bg_connection_status.xml.flat",
-        "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\bg_connection_status.xml"
-    },
-    {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_bg_message_outgoing.xml.flat",
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\bg_message_outgoing.xml"
+    },
+    {
+        "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_bg_connection_status.xml.flat",
+        "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\bg_connection_status.xml"
     },
     {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_ic_send.xml.flat",
@@ -54,6 +50,10 @@
     {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_hugo_profile.png.flat",
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\hugo_profile.png"
+    },
+    {
+        "merged": "com.sesame.voicechat.app-merged_res-34:/layout-land_activity_contact_selection.xml.flat",
+        "source": "com.sesame.voicechat.app-main-36:/layout-land/activity_contact_selection.xml"
     },
     {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_ic_arrow_forward.xml.flat",
@@ -166,6 +166,10 @@
     {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_mute_button_background.xml.flat",
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\mute_button_background.xml"
+    },
+    {
+        "merged": "com.sesame.voicechat.app-merged_res-34:/layout-land_activity_call.xml.flat",
+        "source": "com.sesame.voicechat.app-main-36:/layout-land/activity_call.xml"
     },
     {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
