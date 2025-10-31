@@ -4,6 +4,10 @@
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\contact_selector.xml"
     },
     {
+        "merged": "com.sesame.voicechat.app-merged_res-34:/layout_activity_contact_selection.xml.flat",
+        "source": "com.sesame.voicechat.app-main-36:/layout/activity_contact_selection.xml"
+    },
+    {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\mipmap-xhdpi_ic_launcher.webp.flat",
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\mipmap-xhdpi\\ic_launcher.webp"
     },
@@ -156,6 +160,10 @@
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\layout\\item_sender.xml"
     },
     {
+        "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_hugo_futuristic_background.xml.flat",
+        "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\hugo_futuristic_background.xml"
+    },
+    {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
@@ -174,6 +182,10 @@
     {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_mute_button_background.xml.flat",
         "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\mute_button_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\drawable_kira_futuristic_background.xml.flat",
+        "source": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-main-36:\\drawable\\kira_futuristic_background.xml"
     },
     {
         "merged": "C:\\Users\\az03732\\.gradle\\daemon\\8.9\\com.sesame.voicechat.app-merged_res-34:\\mipmap-anydpi-v26_ic_launcher.xml.flat",

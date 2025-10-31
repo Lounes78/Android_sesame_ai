@@ -3,222 +3,200 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="@color/deep_black"
     android:padding="32dp">
 
-    <!-- Left Section: Character Selection -->
+    <!-- Time-based Greeting -->
+    <TextView
+        android:id="@+id/greetingText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Afternoon"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="@color/off_white"
+        android:layout_marginBottom="48dp"
+        android:gravity="center" />
+
+    <!-- Main Content: Symmetrical Layout -->
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginEnd="24dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <!-- Time-based Greeting -->
-        <TextView
-            android:id="@+id/greetingText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Afternoon"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            android:textColor="@color/golden_yellow"
-            android:layout_marginBottom="24dp"
-            android:gravity="center" />
-
-        <!-- Character Selection Title -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Character"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/off_white"
-            android:layout_marginBottom="32dp"
-            android:gravity="center" />
-
-        <!-- Character Cards - Vertical Layout -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <!-- Kira Character Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/kiraCharacterCard"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_margin="12dp"
-                app:cardCornerRadius="75dp"
-                app:cardElevation="12dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/kira_futuristic_background"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Kira"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/off_white"
-                        android:shadowColor="@color/soft_shadow"
-                        android:shadowDx="1"
-                        android:shadowDy="1"
-                        android:shadowRadius="2" />
-
-                    <TextView
-                        android:id="@+id/kiraSelectedIndicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="✓ Selected"
-                        android:textSize="12sp"
-                        android:textColor="@color/golden_yellow"
-                        android:textStyle="bold"
-                        android:layout_marginTop="8dp"
-                        android:visibility="visible" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Hugo Character Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/hugoCharacterCard"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_margin="12dp"
-                app:cardCornerRadius="75dp"
-                app:cardElevation="12dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/hugo_futuristic_background"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Hugo"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/off_white"
-                        android:shadowColor="@color/soft_shadow"
-                        android:shadowDx="1"
-                        android:shadowDy="1"
-                        android:shadowRadius="2" />
-
-                    <TextView
-                        android:id="@+id/hugoSelectedIndicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="✓ Selected"
-                        android:textSize="12sp"
-                        android:textColor="@color/golden_yellow"
-                        android:textStyle="bold"
-                        android:layout_marginTop="8dp"
-                        android:visibility="invisible" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!-- Right Section: Status and Profile Images -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginStart="24dp">
-
-        <!-- Session Pool Status Section -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginBottom="32dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Session Pool Status"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/golden_yellow"
-                android:layout_marginBottom="16dp"
-                android:gravity="center" />
-
-            <TextView
-                android:id="@+id/kiraPoolStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kira (Français): Initializing..."
-                android:textSize="16sp"
-                android:textColor="@color/off_white"
-                android:alpha="0.8"
-                android:gravity="center"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:id="@+id/hugoPoolStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hugo (Français): Initializing..."
-                android:textSize="16sp"
-                android:textColor="@color/off_white"
-                android:alpha="0.8"
-                android:gravity="center"
-                android:layout_marginBottom="16dp" />
-
-        </LinearLayout>
-
-        <!-- Character Profile Images Section -->
+        <!-- Left Section: Kira Card + Image -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center_vertical">
+
+            <!-- Kira Character Card -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginEnd="20dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/kiraCharacterCard"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="60dp"
+                    app:cardElevation="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/kira_futuristic_background"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I am Kira"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/off_white"
+                            android:shadowColor="@color/soft_shadow"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="2" />
+
+                        <TextView
+                            android:id="@+id/kiraSelectedIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="✓ Selected"
+                            android:textSize="9sp"
+                            android:textColor="@color/golden_yellow"
+                            android:textStyle="bold"
+                            android:layout_marginTop="6dp"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Kira Progress -->
+                <TextView
+                    android:id="@+id/kiraPoolStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ready"
+                    android:textSize="14sp"
+                    android:textColor="@color/golden_yellow"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <!-- Kira Profile Image -->
             <ImageView
                 android:id="@+id/kiraProfileImage"
                 android:layout_width="260dp"
                 android:layout_height="320dp"
-                android:layout_margin="20dp"
                 android:adjustViewBounds="true"
-                android:scaleType="centerInside"
                 android:contentDescription="Kira Profile"
+                android:scaleType="centerInside"
                 android:src="@drawable/kira_profile" />
 
+        </LinearLayout>
+
+        <!-- Central Space -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Right Section: Hugo Image + Card (Mirrored) -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
             <!-- Hugo Profile Image -->
+
+            <!-- Hugo Character Card -->
             <ImageView
                 android:id="@+id/hugoProfileImage"
                 android:layout_width="260dp"
                 android:layout_height="320dp"
-                android:layout_margin="20dp"
+                android:layout_marginEnd="12dp"
                 android:adjustViewBounds="true"
-                android:scaleType="centerInside"
                 android:contentDescription="Hugo Profile"
+                android:scaleType="centerInside"
                 android:src="@drawable/hugo_profile" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/hugoCharacterCard"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="60dp"
+                    app:cardElevation="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/hugo_futuristic_background"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I am Hugo"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/off_white"
+                            android:shadowColor="@color/soft_shadow"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="2" />
+
+                        <TextView
+                            android:id="@+id/hugoSelectedIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="✓ Selected"
+                            android:textSize="9sp"
+                            android:textColor="@color/golden_yellow"
+                            android:textStyle="bold"
+                            android:layout_marginTop="6dp"
+                            android:visibility="invisible" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Hugo Progress -->
+                <TextView
+                    android:id="@+id/hugoPoolStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Loading..."
+                    android:textSize="14sp"
+                    android:textColor="@color/golden_yellow"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

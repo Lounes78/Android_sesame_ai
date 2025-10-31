@@ -1,6 +1,7 @@
 R_DEF: Internal format may change without notice
 local
 color accent_blue
+color amber_gold
 color aqua
 color background
 color background_card
@@ -8,22 +9,34 @@ color background_dark
 color background_light
 color bubble_in
 color bubble_out
+color button_pressed
+color button_selected
+color button_unselected
 color coral_accent
 color coral_dark
 color coral_primary
 color cyan_light
+color dark_gold
+color deep_black
 color divider
 color error
 color error_red
+color golden_yellow
 color gradient_end_light_blue
 color gradient_middle_aqua
 color gradient_start_teal
+color highlight_glow
+color hugo_gradient_end
+color hugo_gradient_start
+color kira_gradient_end
+color kira_gradient_start
 color light_blue
 color md_theme_light_onPrimary
 color md_theme_light_onPrimaryContainer
 color md_theme_light_primary
 color md_theme_light_primaryContainer
 color mute_gray
+color off_white
 color on_background
 color on_error
 color on_primary
@@ -35,6 +48,7 @@ color primary_variant
 color secondary
 color secondary_dark
 color soft_coral
+color soft_shadow
 color soft_teal
 color status_offline
 color status_online
@@ -48,6 +62,7 @@ color text_primary
 color text_primary_new
 color text_secondary
 color text_secondary_new
+color warm_amber
 color warning_orange
 drawable bg_connection_status
 drawable bg_edited
@@ -57,6 +72,7 @@ drawable bg_message_outgoing
 drawable blue_card_background
 drawable contact_selector
 drawable end_call_button
+drawable hugo_futuristic_background
 drawable hugo_profile
 drawable ic_arrow_forward
 drawable ic_back
@@ -68,6 +84,7 @@ drawable ic_mic_off
 drawable ic_phone
 drawable ic_send
 drawable ic_volume_up
+drawable kira_futuristic_background
 drawable kira_profile
 drawable maya_card_background
 drawable miles_card_background

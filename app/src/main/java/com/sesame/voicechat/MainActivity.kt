@@ -292,8 +292,8 @@ class MainActivity : AppCompatActivity() {
                 currentSession = sessionState
                 sesameWebSocket = sessionState.webSocket
                 
-                // Set character name
-                characterName.text = selectedContactName
+                // Set character name (display name without language suffix)
+                characterName.text = selectedCharacter
                 
                 val status = if (sessionState.isPromptComplete) {
                     "Session ready! Starting immediately..."

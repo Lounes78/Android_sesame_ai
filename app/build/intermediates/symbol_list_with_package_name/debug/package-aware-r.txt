@@ -1356,6 +1356,7 @@ color accent_blue
 color accent_material_dark
 color accent_material_light
 color action_button
+color amber_gold
 color androidx_core_ripple_material_light
 color androidx_core_secondary_text_default_material_light
 color aqua
@@ -1377,6 +1378,9 @@ color bubble_in
 color bubble_out
 color button_material_dark
 color button_material_light
+color button_pressed
+color button_selected
+color button_unselected
 color call_notification_answer_color
 color call_notification_decline_color
 color carColorBlue
@@ -1391,6 +1395,8 @@ color coral_accent
 color coral_dark
 color coral_primary
 color cyan_light
+color dark_gold
+color deep_black
 color default_focus_no_content
 color default_gray_600
 color default_white
@@ -1443,11 +1449,17 @@ color error_color_material_light
 color error_red
 color foreground_material_dark
 color foreground_material_light
+color golden_yellow
 color gradient_end_light_blue
 color gradient_middle_aqua
 color gradient_start_teal
+color highlight_glow
 color highlighted_text_material_dark
 color highlighted_text_material_light
+color hugo_gradient_end
+color hugo_gradient_start
+color kira_gradient_end
+color kira_gradient_start
 color light_blue
 color m3_appbar_overlay_color
 color m3_assist_chip_icon_tint_color
@@ -2108,6 +2120,7 @@ color mute_gray
 color notification_action_color_filter
 color notification_icon_bg_color
 color notification_material_background_media_default_color
+color off_white
 color on_background
 color on_error
 color on_primary
@@ -2133,6 +2146,7 @@ color secondary_text_default_material_light
 color secondary_text_disabled_material_dark
 color secondary_text_disabled_material_light
 color soft_coral
+color soft_shadow
 color soft_teal
 color status_offline
 color status_online
@@ -2154,6 +2168,7 @@ color text_secondary
 color text_secondary_new
 color tooltip_background_dark
 color tooltip_background_light
+color warm_amber
 color warning_orange
 dimen abc_action_bar_content_inset_material
 dimen abc_action_bar_content_inset_with_nav
@@ -3066,6 +3081,7 @@ drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
 drawable end_call_button
+drawable hugo_futuristic_background
 drawable hugo_profile
 drawable ic_arrow_back_black_24
 drawable ic_arrow_forward
@@ -3095,6 +3111,7 @@ drawable ic_phone
 drawable ic_search_black_24
 drawable ic_send
 drawable ic_volume_up
+drawable kira_futuristic_background
 drawable kira_profile
 drawable m3_avd_hide_password
 drawable m3_avd_show_password

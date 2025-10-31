@@ -160,31 +160,30 @@ class ContactSelectionActivity : AppCompatActivity() {
             if (contactKey in availableContacts) {
                 val sessionManager = application.getSessionManagerForContact(contactKey)
                 val progressInfo = sessionManager.getSessionProgress()
-                val allSessionsInfo = sessionManager.getAllSessionsProgress()
-                
-                val availableCount = allSessionsInfo.count { it.isConnected }
-                val readyCount = allSessionsInfo.count { it.isComplete }
                 
                 val mostAdvancedProgress = if (progressInfo != null) {
-                    val (progress, _) = progressInfo
-                    (progress * 100).toInt()
+                    val (progress, isComplete) = progressInfo
+                    if (isComplete) {
+                        statusView.text = "Ready"
+                        statusView.alpha = 1.0f
+                        return
+                    } else {
+                        (progress * 100).toInt()
+                    }
                 } else {
                     0
                 }
                 
-                // Format display name (e.g., "Kira-FR" -> "Kira (Français)")
-                val displayName = contactKey.replace("-FR", " (Français)")
-                statusView.text = "$displayName: ${availableCount} available, ${readyCount} ready, ${mostAdvancedProgress}% progress"
+                // Display just the percentage
+                statusView.text = "${mostAdvancedProgress}%"
                 statusView.alpha = 1.0f
                 
             } else {
-                val displayName = contactKey.replace("-FR", " (Français)")
-                statusView.text = "$displayName: Not configured"
+                statusView.text = "Not ready"
                 statusView.alpha = 0.5f
             }
         } catch (e: Exception) {
-            val displayName = contactKey.replace("-FR", " (Français)")
-            statusView.text = "$displayName: Error"
+            statusView.text = "Error"
             statusView.alpha = 0.5f
         }
     }

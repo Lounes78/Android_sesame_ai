@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="accent_blue">#FF2196F3</color>
+    <color name="amber_gold">#FFFFC857</color>
     <color name="aqua">#FF00BCD4</color>
     <color name="background">#FFFFFF</color>
     <color name="background_card">#FFFFFFFF</color>
@@ -8,22 +9,34 @@
     <color name="background_light">#FFF8F9FA</color>
     <color name="bubble_in">#F1F1F1</color>
     <color name="bubble_out">#E3F2FD</color>
+    <color name="button_pressed">#FFE6B400</color>
+    <color name="button_selected">#FFFFD369</color>
+    <color name="button_unselected">#FF2A2A2A</color>
     <color name="coral_accent">#FFFF7043</color>
     <color name="coral_dark">#FFBF360C</color>
     <color name="coral_primary">#FFFF5722</color>
     <color name="cyan_light">#FFB2EBF2</color>
+    <color name="dark_gold">#FFE6B400</color>
+    <color name="deep_black">#FF121212</color>
     <color name="divider">#BDBDBD</color>
     <color name="error">#B00020</color>
     <color name="error_red">#FFDC3545</color>
+    <color name="golden_yellow">#FFFFD369</color>
     <color name="gradient_end_light_blue">#FF81D4FA</color>
     <color name="gradient_middle_aqua">#FF00BCD4</color>
     <color name="gradient_start_teal">#FF4DB6AC</color>
+    <color name="highlight_glow">#66FFD369</color>
+    <color name="hugo_gradient_end">#FFFF8C00</color>
+    <color name="hugo_gradient_start">#FFFFB347</color>
+    <color name="kira_gradient_end">#FFE6B400</color>
+    <color name="kira_gradient_start">#FFFFC857</color>
     <color name="light_blue">#FF81D4FA</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
     <color name="md_theme_light_onPrimaryContainer">#22005D</color>
     <color name="md_theme_light_primary">#6750A4</color>
     <color name="md_theme_light_primaryContainer">#E9DDFF</color>
     <color name="mute_gray">#FFE9ECEF</color>
+    <color name="off_white">#FFF5F5F5</color>
     <color name="on_background">#000000</color>
     <color name="on_error">#FFFFFF</color>
     <color name="on_primary">#FFFFFF</color>
@@ -35,6 +48,7 @@
     <color name="secondary">#03DAC6</color>
     <color name="secondary_dark">#018786</color>
     <color name="soft_coral">#FFFF8A65</color>
+    <color name="soft_shadow">#33000000</color>
     <color name="soft_teal">#FF4DB6AC</color>
     <color name="status_offline">#F44336</color>
     <color name="status_online">#4CAF50</color>
@@ -48,6 +62,7 @@
     <color name="text_primary_new">#FF212529</color>
     <color name="text_secondary">#757575</color>
     <color name="text_secondary_new">#FF6C757D</color>
+    <color name="warm_amber">#FFFFB347</color>
     <color name="warning_orange">#FFFD7E14</color>
     <string name="app_name">Sesame Voice Chat</string>
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
