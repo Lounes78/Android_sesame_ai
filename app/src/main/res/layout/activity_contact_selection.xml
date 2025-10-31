@@ -126,7 +126,6 @@
 
         </LinearLayout>
 
-
         <!-- Session Pool Status Section -->
         <TextView
             android:layout_width="match_parent"
@@ -158,7 +157,40 @@
             android:textColor="@android:color/white"
             android:alpha="0.7"
             android:gravity="center"
-            android:layout_marginBottom="32dp" />
+            android:layout_marginBottom="16dp" />
+
+        <!-- Character Profile Images Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp">
+
+            <!-- Kira Profile Image -->
+            <ImageView
+                android:id="@+id/kiraProfileImage"
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                android:layout_margin="16dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:contentDescription="Kira Profile"
+                android:src="@drawable/kira_profile" />
+
+            <!-- Hugo Profile Image -->
+            <ImageView
+                android:id="@+id/hugoProfileImage"
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                android:layout_margin="16dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:contentDescription="Hugo Profile"
+                android:src="@drawable/hugo_profile" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

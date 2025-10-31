@@ -57,6 +57,7 @@ drawable bg_message_outgoing
 drawable blue_card_background
 drawable contact_selector
 drawable end_call_button
+drawable hugo_profile
 drawable ic_arrow_forward
 drawable ic_back
 drawable ic_call_end
@@ -67,6 +68,7 @@ drawable ic_mic_off
 drawable ic_phone
 drawable ic_send
 drawable ic_volume_up
+drawable kira_profile
 drawable maya_card_background
 drawable miles_card_background
 drawable mute_button_background
@@ -95,6 +97,7 @@ id greetingText
 id headerSection
 id hugoCharacterCard
 id hugoPoolStatus
+id hugoProfileImage
 id hugoSelectedIndicator
 id incomingLayout
 id initializationMessage
@@ -106,6 +109,7 @@ id initializationTitle
 id instructionText
 id kiraCharacterCard
 id kiraPoolStatus
+id kiraProfileImage
 id kiraSelectedIndicator
 id layoutTTSOptions
 id messageLayout

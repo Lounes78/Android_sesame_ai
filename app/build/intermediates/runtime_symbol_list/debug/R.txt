@@ -3065,6 +3065,7 @@ int drawable design_ic_visibility_off 0x7f08008e
 int drawable design_password_eye 0x7f08008f
 int drawable design_snackbar_background 0x7f080090
 int drawable end_call_button 0x7f080091
+int drawable hugo_profile 0x7f0800fe
 int drawable ic_arrow_back_black_24 0x7f080092
 int drawable ic_arrow_forward 0x7f080093
 int drawable ic_back 0x7f080094
@@ -3093,6 +3094,7 @@ int drawable ic_phone 0x7f0800aa
 int drawable ic_search_black_24 0x7f0800ab
 int drawable ic_send 0x7f0800ac
 int drawable ic_volume_up 0x7f0800ad
+int drawable kira_profile 0x7f0800ff
 int drawable m3_avd_hide_password 0x7f0800ae
 int drawable m3_avd_show_password 0x7f0800af
 int drawable m3_bottom_sheet_drag_handle 0x7f0800b0
@@ -3418,6 +3420,7 @@ int id honorRequest 0x7f0900f1
 int id horizontal_only 0x7f0900f2
 int id hugoCharacterCard 0x7f090247
 int id hugoPoolStatus 0x7f090250
+int id hugoProfileImage 0x7f090252
 int id hugoSelectedIndicator 0x7f09024a
 int id icon 0x7f0900f7
 int id icon_group 0x7f0900f8
@@ -3445,6 +3448,7 @@ int id jumpToEnd 0x7f09010d
 int id jumpToStart 0x7f09010e
 int id kiraCharacterCard 0x7f09024b
 int id kiraPoolStatus 0x7f090251
+int id kiraProfileImage 0x7f090253
 int id kiraSelectedIndicator 0x7f09024e
 int id labeled 0x7f090113
 int id layout 0x7f090114
