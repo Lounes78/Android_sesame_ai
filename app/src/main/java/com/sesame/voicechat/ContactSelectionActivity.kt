@@ -8,10 +8,13 @@ import android.widget.RadioGroup
 import android.widget.RadioButton
 import android.widget.Button
 import android.widget.Toast
+import android.media.MediaPlayer
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import kotlinx.coroutines.*
 import java.util.*
+import java.io.File
 
 class ContactSelectionActivity : AppCompatActivity() {
     
@@ -37,6 +40,8 @@ class ContactSelectionActivity : AppCompatActivity() {
     
     private lateinit var application: SesameApplication
     private var progressUpdateJob: Job? = null
+    private var debugMediaPlayer: MediaPlayer? = null
+    
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -226,8 +231,11 @@ class ContactSelectionActivity : AppCompatActivity() {
         progressUpdateJob?.cancel()
     }
     
+    
     override fun onDestroy() {
         super.onDestroy()
         progressUpdateJob?.cancel()
+        debugMediaPlayer?.release()
+        debugMediaPlayer = null
     }
 }

@@ -359,7 +359,7 @@ class SessionManager private constructor(
                 }
                 
                 // Wait for AI response processing
-                delay(2000)
+                delay(500)
                 
                 // Session is now "done" - schedule it for replacement (like working version)
                 sessionState?.let { state ->
