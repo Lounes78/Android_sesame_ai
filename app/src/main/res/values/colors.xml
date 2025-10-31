@@ -68,4 +68,25 @@
     <!-- Configuration screen colors -->
     <color name="background_dark">#FF1A1A1A</color>
     <color name="accent_blue">#FF2196F3</color>
+    
+    <!-- Futuristic Theme Colors -->
+    <color name="deep_black">#FF121212</color>
+    <color name="off_white">#FFF5F5F5</color>
+    <color name="golden_yellow">#FFFFD369</color>
+    <color name="amber_gold">#FFFFC857</color>
+    <color name="dark_gold">#FFE6B400</color>
+    <color name="warm_amber">#FFFFB347</color>
+    <color name="soft_shadow">#33000000</color>
+    <color name="highlight_glow">#66FFD369</color>
+    
+    <!-- Character Button Colors -->
+    <color name="kira_gradient_start">#FFFFC857</color>
+    <color name="kira_gradient_end">#FFE6B400</color>
+    <color name="hugo_gradient_start">#FFFFB347</color>
+    <color name="hugo_gradient_end">#FFFF8C00</color>
+    
+    <!-- Button States -->
+    <color name="button_selected">#FFFFD369</color>
+    <color name="button_unselected">#FF2A2A2A</color>
+    <color name="button_pressed">#FFE6B400</color>
 </resources>

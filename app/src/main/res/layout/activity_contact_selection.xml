@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="@color/deep_black"
     android:fillViewport="true">
 
     <LinearLayout
@@ -20,7 +20,7 @@
             android:text="Morning"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textColor="@color/golden_yellow"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
             android:gravity="center" />
@@ -32,7 +32,7 @@
             android:text="Select Character"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textColor="@color/off_white"
             android:layout_marginBottom="16dp"
             android:gravity="center" />
 
@@ -59,7 +59,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/blue_card_background"
+                    android:background="@drawable/kira_futuristic_background"
                     android:orientation="vertical"
                     android:gravity="center">
 
@@ -69,7 +69,11 @@
                         android:text="Kira"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@color/off_white"
+                        android:shadowColor="@color/soft_shadow"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="2" />
 
                     <TextView
                         android:id="@+id/kiraSelectedIndicator"
@@ -77,7 +81,8 @@
                         android:layout_height="wrap_content"
                         android:text="✓ Selected"
                         android:textSize="12sp"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/golden_yellow"
+                        android:textStyle="bold"
                         android:layout_marginTop="4dp"
                         android:visibility="visible" />
 
@@ -99,7 +104,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/maya_card_background"
+                    android:background="@drawable/hugo_futuristic_background"
                     android:orientation="vertical"
                     android:gravity="center">
 
@@ -109,7 +114,11 @@
                         android:text="Hugo"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@color/off_white"
+                        android:shadowColor="@color/soft_shadow"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="2" />
 
                     <TextView
                         android:id="@+id/hugoSelectedIndicator"
@@ -117,7 +126,8 @@
                         android:layout_height="wrap_content"
                         android:text="✓ Selected"
                         android:textSize="12sp"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/golden_yellow"
+                        android:textStyle="bold"
                         android:layout_marginTop="4dp"
                         android:visibility="invisible" />
 
@@ -133,7 +143,7 @@
             android:text="Session Pool Status"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textColor="@color/golden_yellow"
             android:layout_marginBottom="12dp"
             android:gravity="center" />
 
@@ -143,7 +153,7 @@
             android:layout_height="wrap_content"
             android:text="Kira (Français): Initializing..."
             android:textSize="12sp"
-            android:textColor="@android:color/white"
+            android:textColor="@color/off_white"
             android:alpha="0.7"
             android:gravity="center"
             android:layout_marginBottom="4dp" />
@@ -154,7 +164,7 @@
             android:layout_height="wrap_content"
             android:text="Hugo (Français): Initializing..."
             android:textSize="12sp"
-            android:textColor="@android:color/white"
+            android:textColor="@color/off_white"
             android:alpha="0.7"
             android:gravity="center"
             android:layout_marginBottom="16dp" />

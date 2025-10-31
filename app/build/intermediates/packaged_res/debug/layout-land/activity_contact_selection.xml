@@ -49,10 +49,10 @@
             <!-- Kira Character Card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/kiraCharacterCard"
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="90dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="75dp"
                 app:cardElevation="12dp"
                 android:clickable="true"
                 android:focusable="true"
@@ -69,7 +69,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Kira"
-                        android:textSize="28sp"
+                        android:textSize="24sp"
                         android:textStyle="bold"
                         android:textColor="@android:color/white" />
 
@@ -78,7 +78,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="✓ Selected"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         android:textColor="@android:color/white"
                         android:layout_marginTop="8dp"
                         android:visibility="visible" />
@@ -89,10 +89,10 @@
             <!-- Hugo Character Card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/hugoCharacterCard"
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="90dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="75dp"
                 app:cardElevation="12dp"
                 android:clickable="true"
                 android:focusable="true"
@@ -109,7 +109,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hugo"
-                        android:textSize="28sp"
+                        android:textSize="24sp"
                         android:textStyle="bold"
                         android:textColor="@android:color/white" />
 
@@ -118,7 +118,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="✓ Selected"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         android:textColor="@android:color/white"
                         android:layout_marginTop="8dp"
                         android:visibility="invisible" />
@@ -191,9 +191,9 @@
             <!-- Kira Profile Image -->
             <ImageView
                 android:id="@+id/kiraProfileImage"
-                android:layout_width="200dp"
-                android:layout_height="250dp"
-                android:layout_margin="16dp"
+                android:layout_width="260dp"
+                android:layout_height="320dp"
+                android:layout_margin="20dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:contentDescription="Kira Profile"
@@ -202,9 +202,9 @@
             <!-- Hugo Profile Image -->
             <ImageView
                 android:id="@+id/hugoProfileImage"
-                android:layout_width="200dp"
-                android:layout_height="250dp"
-                android:layout_margin="16dp"
+                android:layout_width="260dp"
+                android:layout_height="320dp"
+                android:layout_margin="20dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:contentDescription="Hugo Profile"
