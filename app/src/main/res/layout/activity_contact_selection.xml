@@ -181,9 +181,9 @@
             <!-- Kira Profile Image -->
             <ImageView
                 android:id="@+id/kiraProfileImage"
-                android:layout_width="220dp"
-                android:layout_height="280dp"
-                android:layout_margin="8dp"
+                android:layout_width="280dp"
+                android:layout_height="350dp"
+                android:layout_margin="4dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:contentDescription="Kira Profile"
@@ -192,9 +192,9 @@
             <!-- Hugo Profile Image -->
             <ImageView
                 android:id="@+id/hugoProfileImage"
-                android:layout_width="220dp"
-                android:layout_height="280dp"
-                android:layout_margin="8dp"
+                android:layout_width="280dp"
+                android:layout_height="350dp"
+                android:layout_margin="4dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:contentDescription="Hugo Profile"
